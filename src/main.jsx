@@ -1,4 +1,6 @@
 
+  console.log(`🧩 Frontend running in ${import.meta.env.VITE_ENV} mode`);
+  console.log(`🔗 Using API: ${import.meta.env.VITE_API_URL}`);
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -9,6 +11,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 
 const RootComponent = () => {
+  
 // isko infuture shi krduga bad mai
  
   //const {
@@ -23,9 +26,12 @@ const RootComponent = () => {
   //    console.log('🔄 New content available');
   //  },
   //});
+// 👇 Add this right here
 
   return (
+
     <>
+    
       {/*{needRefresh && (
         <div className="refresh-banner">
           <p>🔄 New update available!</p>

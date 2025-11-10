@@ -43,6 +43,8 @@ import { toast } from "react-toastify";
 
 
 const CustomerList = () => {
+
+  
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -158,6 +160,7 @@ const CustomerList = () => {
     });
     setPagination(prev => ({ ...prev, page: 1 }));
   };
+
 
 const handleNavigatepayment = async (id) => {
   console.log("hit");

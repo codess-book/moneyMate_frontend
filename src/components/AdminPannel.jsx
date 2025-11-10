@@ -46,7 +46,7 @@ useEffect(() => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         }
       });
-     console.log("Upcoming Payments:", res.data); //  Check Console
+    // console.log("Upcoming Payments:", res.data); //  Check Console
       setUpcoming(res.data); // make sure res.data is the array
     } catch (err) {
       console.error("Error fetching upcoming payments:", err);

@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import '../styles/Login.css';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-const apiBaseUrl = import.meta.env.VITE_API_URL;
-//import {login} from '../'
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,164 +11,207 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [rememberMe, setRememberMe] = useState(false);
 
-
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+  const apiBaseUrl = import.meta.env.VITE_API_URL;
 
   const validateForm = () => {
-
-
     const newErrors = {};
     if (!email) newErrors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Email is invalid';
     
     if (!password) newErrors.password = 'Password is required';
-    else if (password.length < 8) newErrors.password = 'Password must be at least 8 characters';
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-const handleSubmit = async (e) => {
-  
-  e.preventDefault();
+    setIsLoading(true);
+    setErrors({});
 
-  if (!validateForm()) return;
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, rememberMe }),
+      });
 
-  setIsLoading(true);
-  setErrors({});
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
+      }
 
-  try {
-    const response = await fetch( `${apiBaseUrl}/api/auth/login`    , {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password, rememberMe }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Login failed');
+      const data = await response.json();
+      toast.success('🚜 Welcome to Arya Krishi Farm!');
+      
+      localStorage.setItem('token', data.token);
+      navigate('/dashboard');
+    } catch (error) {
+      setErrors({ general: error.message || 'Invalid credentials' });
+      toast.error('❌ Login failed');
+    } finally {
+      setIsLoading(false);
     }
-
-    const data = await response.json();
-    toast.success('🎉 Login Successful!');
-    
-    localStorage.setItem('token', data.token);
-
-    navigate('/dashboard');
-  } catch (error) {
-    setErrors({ general: error.message || 'Invalid credentials. Please try again.' });
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   return (
     <div className="login-container">
+      {/* Left Side - Animated Brand Section */}
       <div className="brand-section">
-        <div className="brand-overlay"></div>
-        <img src="/login_page.jpg" alt="Wholesale Shop" className="brand-image" />
+        <div className="animated-background">
+          <div className="floating-icon">🌾</div>
+          <div className="floating-icon">🚜</div>
+          <div className="floating-icon">💧</div>
+          <div className="floating-icon">🌱</div>
+          <div className="floating-icon">☀️</div>
+        </div>
+        
         <div className="brand-content">
-          <h1 className="neon-text">MoneyMate</h1>
-          <p className="tagline glow">Manage Payments. Grow Trust</p>
-          <div className="quote">
-            {/*<p className="glow">"Trusted by businesses nationwide"</p>*/}
-            {/*<p className="glow">"Team-codes.book"</p>*/}
+          <div className="logo-animation">
+            <div className="logo-circle">
+              <span className="logo-main">🌾</span>
+            </div>
+          </div>
+          
+          <h1 className="brand-title">
+            Arya Krishi Farm<span className="highlight"></span>
+          </h1>
+          
+          <p className="brand-tagline">
+            Growing Together, <span className="glow-text">Prospering Forever</span>
+          </p>
+
+          <div className="feature-highlights">
+            <div className="feature-card">
+              <div className="feature-icon">💰</div>
+              <div className="feature-text">
+                <h3>Smart Payments</h3>
+                <p>Seamless financial management</p>
+              </div>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">📊</div>
+              <div className="feature-text">
+                <h3>Live Analytics</h3>
+                <p>Real-time business insights</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="powered-by">
+            <p>Powered by <span className="company-name">codes.book</span></p>
+            <div className="product-badge">
+              <span className="product-icon">💎</span>
+              MoneyMate
+            </div>
           </div>
         </div>
       </div>
-      
+
+      {/* Right Side - Login Form */}
       <div className="login-section">
-        <div className="login-card neon-border">
+        <div className="login-card">
           <div className="login-header">
-            <h2 className="neon-text">WELCOME BACK</h2>
-            <p className="glow">Sign in to your account</p>
-          </div>
-          
-          {errors.general && <div className="error-message neon-error">{errors.general}</div>}
-          
-          <form onSubmit={handleSubmit} noValidate>
-            <div className={`form-group ${errors.email ? 'error' : ''}`}>
-              <label htmlFor="email" className="input-label">EMAIL ADDRESS</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                autoComplete="username"
-                required
-                className="neon-input"
-              />
-              {errors.email && <span className="error-text neon-error">{errors.email}</span>}
+            <div className="welcome-badge">
+              <span className="badge-icon">👋</span>
+              Welcome back
             </div>
-            
-            <div className={`form-group ${errors.password ? 'error' : ''}`}>
-              <label htmlFor="password" className="input-label">PASSWORD</label>
-              <div className="password-input">
+            <h2>Access Your Account</h2>
+            <p>Enter your credentials to continue</p>
+          </div>
+
+          {errors.general && (
+            <div className="error-message">
+              ⚠️ {errors.general}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className={`input-group ${errors.email ? 'error' : ''}`}>
+              <label>Email Address</label>
+              <div className="input-wrapper">
+                <span className="input-icon">📧</span>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="modern-input"
+                />
+              </div>
+              {errors.email && <span className="error-text">{errors.email}</span>}
+            </div>
+
+            <div className={`input-group ${errors.password ? 'error' : ''}`}>
+              <label>Password</label>
+              <div className="input-wrapper">
+                <span className="input-icon">🔒</span>
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  autoComplete="current-password"
-                  required
-                  className="neon-input"
+                  className="modern-input"
                 />
                 <button
                   type="button"
-                  className="toggle-password "
+                  className="password-toggle"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? '🙈' : '👁️'}
                 </button>
               </div>
-              {errors.password && <span className="error-text neon-error">{errors.password}</span>}
+              {errors.password && <span className="error-text">{errors.password}</span>}
             </div>
-            
+
             <div className="form-options">
-              <div className="remember-me">
-               <input
-  type="checkbox"
-  id="remember"
-  className="neon-checkbox"
-  checked={rememberMe}
-  onChange={() => setRememberMe(!rememberMe)}
-/>
-                <label htmlFor="remember" className="glow">Remember me</label>
-              </div>
-              {/*<a href="/forgot-password" className="forgot-password glow">Forgot password?</a>*/}
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={() => setRememberMe(!rememberMe)}
+                  className="modern-checkbox"
+                />
+                <span className="checkmark"></span>
+                Remember me
+              </label>
+              <a href="/forgot-password" className="forgot-link">
+                Forgot password?
+              </a>
             </div>
-            
-            <button
-              type="submit"
-              className="login-button neon-button"
+
+            <button 
+              type="submit" 
+              className={`login-btn ${isLoading ? 'loading' : ''}`}
               disabled={isLoading}
             >
               {isLoading ? (
                 <>
-                  <span className="spinner"></span>
-                  SIGNING IN...
+                  <div className="btn-spinner"></div>
+                  Signing in...
                 </>
               ) : (
-                'SIGN IN'
+                <>
+                  <span className="btn-icon">→</span>
+                  Sign In to Dashboard
+                </>
               )}
             </button>
           </form>
-          
-                 </div>
-        
-        <div className="footer glow">
-          <p>© {new Date().getFullYear()} codes.book ALL RIGHTS RESERVED.</p>
-          <div className="footer-links">
-            <a href="/privacy" className="neon-link">PRIVACY POLICY</a>
-            <a href="/terms" className="neon-link">TERMS OF SERVICE</a>
-            <a href="/contact" className="neon-link">CONTACT</a>
+
+          <div className="login-footer">
+            {/* <p>New to Arya Krishi Farm? <a href="/signup" className="signup-link">Create account</a></p> */}
           </div>
+        </div>
+
+        <div className="page-footer">
+          <p>© 2025 Arya Krishi Farm. All rights reserved.</p>
+          <p>Built with 💚 by <strong>codes.book</strong></p>
         </div>
       </div>
     </div>
