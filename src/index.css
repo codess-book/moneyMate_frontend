@@ -1,3 +1,4 @@
+@import "tailwindcss";
 
 * {
   box-sizing: border-box;
@@ -9,6 +10,21 @@ body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #fff;
   color: #333;
+}
+
+
+@keyframes pop {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.animate-pop {
+  animation: pop 0.25s ease-out;
 }
 
 

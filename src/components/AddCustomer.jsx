@@ -403,7 +403,7 @@ if (!nextPaymentDate && balanceAmount > 0) {
       {/* Quantity, Price, Total - Row on desktop, stacked on mobile */}
       <div className="item-inputs-group">
         <div className="input-group">
-          <span className="mobile-label">Qty</span>
+          <span className="mobile-label text-red-950">Qty</span>
           <input
             type="text"
             value={item.quantity}

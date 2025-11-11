@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  FiHome, 
-  FiUsers, 
-  FiMenu, 
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  FiHome,
+  FiUsers,
+  FiMenu,
   FiX,
   FiBell,
   FiLogOut,
@@ -15,22 +15,22 @@ import {
   FiPackage,
   FiDollarSign,
   FiCloudRain,
-  FiSettings
-} from 'react-icons/fi';
-import { TbPlant2 } from 'react-icons/tb';
-import '../styles/Dashboard.css';
-import { Outlet } from 'react-router-dom';
+  FiSettings,
+} from "react-icons/fi";
+import { TbPlant2 } from "react-icons/tb";
+import "../styles/Dashboard.css";
+import { Outlet } from "react-router-dom";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [admin, setAdmin] = useState({ name: '', photo: '' });
+  const [admin, setAdmin] = useState({ name: "", photo: "" });
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/');
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
   const toggleSidebar = () => {
@@ -70,25 +70,25 @@ const Dashboard = () => {
       {/* Navbar */}
       <nav className="navbar">
         <div className="navbar-left">
-          <button 
-            className="menu-toggle" 
+          <button
+            className="menu-toggle"
             onClick={toggleSidebar}
             aria-label="Toggle sidebar"
           >
             {sidebarOpen ? <FiX size={20} /> : <FiMenu size={20} />}
           </button>
-          
+
           <div className="farm-brand">
             <TbPlant2 className="farm-logo" />
             <span className="brand-text">Arya Krishi Farm</span>
           </div>
         </div>
-        
+
         <div className="navbar-right">
           <button className="notification-btn">
             <FiBell size={18} />
           </button>
-          
+
           {/* <div className="user-profile">
             <div className="user-avatar">
               <img 
@@ -108,111 +108,166 @@ const Dashboard = () => {
       </nav>
 
       {/* Mobile Menu Toggle */}
-      <button 
-        className="mobile-menu-toggle" 
-        onClick={toggleMobileMenu}
-      >
+      <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
         {mobileMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
       </button>
 
       {/* Sidebar */}
-      <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'} ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+      <aside
+        className={`sidebar ${sidebarOpen ? "open" : "closed"} ${
+          mobileMenuOpen ? "mobile-open" : ""
+        }`}
+      >
         {/* <div className="sidebar-header">
           <h1>🌱 Farm Dashboard</h1>
         </div> */}
-        
+
         <nav className="sidebar-nav">
           <ul>
-            <li 
-              className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
+            <li
+              className={`nav-item ${
+                activeTab === "dashboard" ? "active" : ""
+              }`}
               onClick={() => {
-                setActiveTab('dashboard');
+                setActiveTab("dashboard");
                 setMobileMenuOpen(false);
-                navigate('/dashboard'); 
+                navigate("/dashboard");
               }}
             >
               <FiHome className="nav-icon" />
               <span className="nav-text">Farm Overview</span>
             </li>
 
-            <li 
-              className={`nav-item ${activeTab === 'customers' ? 'active' : ''}`}
+            <li
+              className={`nav-item ${
+                activeTab === "customers" ? "active" : ""
+              }`}
               onClick={() => {
-                setActiveTab('customers');
+                setActiveTab("customers");
                 setMobileMenuOpen(false);
-                navigate('/dashboard/customers');
+                navigate("/dashboard/customers");
               }}
             >
               <FiUserPlus className="nav-icon" />
               <span className="nav-text">Add Farmers</span>
             </li>
 
-            <li 
-              className={`nav-item ${activeTab === 'viewcustomers' ? 'active' : ''}`}
+            <li
+              className={`nav-item ${
+                activeTab === "viewfarmers" ? "active" : ""
+              }`}
               onClick={() => {
-                setActiveTab('viewcustomers');
+                setActiveTab("viewfarmers");
                 setMobileMenuOpen(false);
-                navigate('/dashboard/viewCustomers');
+                navigate("/dashboard/viewFarmers");
               }}
             >
               <FiUsers className="nav-icon" />
               <span className="nav-text">View Farmers</span>
             </li>
 
-           
-
-            <li 
-              className={`nav-item ${activeTab === 'addItems' ? 'active' : ''}`}
+            <li
+              className={`nav-item ${
+                activeTab === "viewcustomers" ? "active" : ""
+              }`}
               onClick={() => {
-                setActiveTab('addItems');
+                setActiveTab("viewcustomers");
                 setMobileMenuOpen(false);
-                navigate('/dashboard/addItems');
+                navigate("/dashboard/viewCustomers");
+              }}
+            >
+              <FiUsers className="nav-icon" />
+              <span className="nav-text">View Customers</span>
+            </li>
+
+            <li
+              className={`nav-item ${
+                activeTab === "inventory" ? "active" : ""
+              }`}
+              onClick={() => {
+                setActiveTab("inventory");
+                setMobileMenuOpen(false);
+                navigate("/dashboard/inventory"); // 👈 Navigate to route
+              }}
+            >
+              <FiUserPlus className="nav-icon" />
+              <span className="nav-text">Inventory</span>
+            </li>
+
+            <li
+              className={`nav-item ${
+                activeTab === "BillManager" ? "active" : ""
+              }`}
+              onClick={() => {
+                setActiveTab("BillManager");
+                setMobileMenuOpen(false);
+                navigate("/dashboard/billManager");
+              }}
+            >
+              <FiDribbble className="nav-icon" />
+              <span className="nav-text">Bill Manager</span>
+            </li>
+
+            <li
+              className={`nav-item ${activeTab === "addItems" ? "active" : ""}`}
+              onClick={() => {
+                setActiveTab("addItems");
+                setMobileMenuOpen(false);
+                navigate("/dashboard/addItems");
               }}
             >
               <FiPackage className="nav-icon" />
               <span className="nav-text">Crop Inventory</span>
             </li>
 
-            <li 
-              className={`nav-item ${activeTab === 'DasHChart' ? 'active' : ''}`}
+            <li
+              className={`nav-item ${
+                activeTab === "DasHChart" ? "active" : ""
+              }`}
               onClick={() => {
-                setActiveTab('DasHChart');
+                setActiveTab("DasHChart");
                 setMobileMenuOpen(false);
-                navigate('/dashboard/DasHChart');
+                navigate("/dashboard/DasHChart");
               }}
             >
               <FiBarChart2 className="nav-icon" />
               <span className="nav-text">Farm Analytics</span>
             </li>
 
-            <li 
-              className={`nav-item ${activeTab === 'logistics' ? 'active' : ''}`}
+            <li
+              className={`nav-item ${
+                activeTab === "logistics" ? "active" : ""
+              }`}
               onClick={() => {
-                setActiveTab('logistics');
+                setActiveTab("logistics");
                 setMobileMenuOpen(false);
-                navigate('/dashboard/logistics');
+                navigate("/dashboard/logistics");
               }}
             >
               <FiTruck className="nav-icon" />
               <span className="nav-text">Inventory</span>
             </li>
-             <li 
-              className={`nav-item ${activeTab === 'BillManager' ? 'active' : ''}`}
+            <li
+              className={`nav-item ${
+                activeTab === "BillManager" ? "active" : ""
+              }`}
               onClick={() => {
-                setActiveTab('BillManager');
+                setActiveTab("BillManager");
                 setMobileMenuOpen(false);
-                navigate('/dashboard/billManager');
+                navigate("/dashboard/billManager");
               }}
             >
               <FiDollarSign className="nav-icon" />
               <span className="nav-text">Payment Manager</span>
             </li>
-             <li 
-              className={`nav-item ${activeTab === 'logistics' ? 'active' : ''}`}
+            <li
+              className={`nav-item ${
+                activeTab === "logistics" ? "active" : ""
+              }`}
               onClick={() => {
-                setActiveTab('logistics');
+                setActiveTab("logistics");
                 setMobileMenuOpen(false);
-                navigate('/dashboard/logistics');
+                navigate("/dashboard/logistics");
               }}
             >
               <FiSettings className="nav-icon" />
@@ -230,17 +285,38 @@ const Dashboard = () => {
               <FiCloudRain className="nav-icon" />
               <span className="nav-text">Weather Forecast</span>
             </li> */}
+
+            <li
+              className={`nav-item ${
+                activeTab === "SupplierHistoryPage" ? "active" : ""
+              }`}
+              onClick={() => {
+                setActiveTab("SupplierHistoryPage");
+                setMobileMenuOpen(false);
+                navigate("/dashboard/SupplierHistoryPage");
+              }}
+            >
+              <FiBarChart2 className="nav-icon" />
+              <span className="nav-text">Supplier</span>
+            </li>
           </ul>
         </nav>
-        
+
         <div className="sidebar-footer">
-          <p>© {new Date().getFullYear()} codes.book • Cultivating Success Together 🌾</p>
+          <p>
+            © {new Date().getFullYear()} codes.book • Cultivating Success
+            Together 🌾
+          </p>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className={`main-content ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-        <Outlet /> 
+      <main
+        className={`main-content ${
+          sidebarOpen ? "sidebar-open" : "sidebar-closed"
+        }`}
+      >
+        <Outlet />
       </main>
     </div>
   );
