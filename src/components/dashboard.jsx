@@ -170,6 +170,19 @@ const Dashboard = () => {
 
 
              <li 
+              className={`nav-item ${activeTab === 'inventory' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab('inventory');
+                setMobileMenuOpen(false);
+                navigate('/dashboard/inventory'); // 👈 Navigate to route
+              }}
+            >
+              <FiUserPlus className="nav-icon" />
+              <span className="nav-text">Inventory</span>
+            </li>
+
+
+             <li 
               className={`nav-item ${activeTab === 'BillManager' ? 'active' : ''}`}
               onClick={() => {
                 setActiveTab('BillManager');
@@ -204,6 +217,18 @@ const Dashboard = () => {
             >
               <FiBarChart2 className="nav-icon" />
               <span className="nav-text">View Analytics</span>
+            </li>
+            
+            <li 
+              className={`nav-item ${activeTab === 'SupplierHistoryPage' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab('SupplierHistoryPage');
+                setMobileMenuOpen(false);
+                 navigate('/dashboard/SupplierHistoryPage');
+              }}
+            >
+              <FiBarChart2 className="nav-icon" />
+              <span className="nav-text">Supplier</span>
             </li>
            
           </ul>

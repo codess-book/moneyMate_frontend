@@ -21,6 +21,8 @@ import BillManager from './components/BillManager'
 import { useEffect } from 'react';
 import useServiceWorkerUpdate from './hooks/useServiceWorkerUpdate'
 import NetworkToast from './components/NetworkToast'
+import Inventory from './components/Inventory'
+import SupplierHistoryPage from './components/SupplierHistory'
 
 
 
@@ -65,6 +67,9 @@ function App() {
                        <Route path="DasHChart" element={<DashChart />} ></Route>
                        <Route path='addItems' element={<AddItem/>}></Route>
 <Route  path='billManager' element={<BillManager/>} ></Route>
+<Route  path='inventory' element={<Inventory/>} ></Route>
+<Route  path='SupplierHistoryPage' element={<SupplierHistoryPage/>} ></Route>
+
 
         
         </Route>
