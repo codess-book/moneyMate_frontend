@@ -21,6 +21,8 @@ import BillManager from "./components/BillManager";
 import { useEffect } from "react";
 import useServiceWorkerUpdate from "./hooks/useServiceWorkerUpdate";
 import NetworkToast from "./components/NetworkToast";
+import Inventory from "./components/Logistics";
+import SupplierHistoryPage from "./components/SupplierHistory";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -61,6 +63,9 @@ function App() {
             <Route path="DasHChart" element={<DashChart />}></Route>
             <Route path="addItems" element={<AddItem />}></Route>
             <Route path="billManager" element={<BillManager />}></Route>
+            <Route path="logistics" element={<Inventory/>}></Route>
+            <Route path="supplier" element={<SupplierHistoryPage/>} />
+
           </Route>
         </Route>
 

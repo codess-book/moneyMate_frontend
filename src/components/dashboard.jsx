@@ -161,7 +161,7 @@ const Dashboard = () => {
 
            
 
-            <li 
+            {/* <li 
               className={`nav-item ${activeTab === 'addItems' ? 'active' : ''}`}
               onClick={() => {
                 setActiveTab('addItems');
@@ -171,7 +171,7 @@ const Dashboard = () => {
             >
               <FiPackage className="nav-icon" />
               <span className="nav-text">Crop Inventory</span>
-            </li>
+            </li> */}
 
             <li 
               className={`nav-item ${activeTab === 'DasHChart' ? 'active' : ''}`}
@@ -208,9 +208,9 @@ const Dashboard = () => {
               <span className="nav-text">Payment Manager</span>
             </li>
              <li 
-              className={`nav-item ${activeTab === 'logistics' ? 'active' : ''}`}
+              className={`nav-item ${activeTab === 'setting' ? 'active' : ''}`}
               onClick={() => {
-                setActiveTab('logistics');
+                setActiveTab('setting');
                 setMobileMenuOpen(false);
                 navigate('/dashboard/logistics');
               }}
@@ -231,6 +231,19 @@ const Dashboard = () => {
               <span className="nav-text">Weather Forecast</span>
             </li> */}
           </ul>
+
+
+            <li 
+              className={`nav-item ${activeTab === 'supplier' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab('supplier');
+                setMobileMenuOpen(false);
+                navigate('/dashboard/supplier');
+              }}
+            >
+              <FiDollarSign className="nav-icon" />
+              <span className="nav-text">Supplier</span>
+            </li>
         </nav>
         
         <div className="sidebar-footer">
