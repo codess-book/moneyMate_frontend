@@ -135,7 +135,7 @@ const Login = () => {
             <div className={`input-group ${errors.email ? 'error' : ''}`}>
               <label>Email Address</label>
               <div className="input-wrapper">
-                <span className="input-icon">📧</span>
+                <span className="input-icon"></span>
                 <input
                   type="email"
                   value={email}
@@ -150,7 +150,7 @@ const Login = () => {
             <div className={`input-group ${errors.password ? 'error' : ''}`}>
               <label>Password</label>
               <div className="input-wrapper">
-                <span className="input-icon">🔒</span>
+                <span className="input-icon"></span>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
