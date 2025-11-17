@@ -14,7 +14,7 @@
 
 
 .custom-gradient-button {
-    background-color: #5cb85c; // Fallback
+    background-color: #5cb85c;
     background-image: linear-gradient(to bottom, #69d469 0%, #5cb85c 100%);
     border: 1px solid #4cae4c;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);

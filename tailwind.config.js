@@ -17,6 +17,11 @@ module.exports = {
           '0%': { transform: 'translateY(20px) scale(0.98)', opacity: '0' },
           '100%': { transform: 'translateY(0) scale(1)', opacity: '1' },
         },
+         colors: {
+        "farm-sky": "#d7f3ff",
+        "farm-cream": "#fff7e6",
+        "farm-tan": "#f0e4cc",
+      },
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-out forwards',

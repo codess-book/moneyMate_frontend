@@ -1,5 +1,6 @@
 .add-customer-container {
   max-width: 100%;
+  
   margin: 0 auto;
   padding: 2rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -8,19 +9,20 @@
 .form-header {
   margin-bottom: 2rem;
   text-align: center;
+  /* color: #16a34a; */
 
 }
 
 .form-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #1f2937;
+  color:green;
   margin-bottom: 0.5rem;
 }
 
 .form-subtitle {
   font-size: 1.1rem;
-  color: #6b7280;
+  color:grey;
   margin-bottom: 1rem;
 }
 
@@ -28,7 +30,9 @@
   background-color: #fff;
   border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  
+  /* box-shadow:0 4px 3px black; */
+  /* box-shadow: 0 4px 6px ; */
 }
 
 .form-grid {
@@ -49,10 +53,10 @@
 .form-label {
   display: flex;
   align-items: center;
-  font-size: 1.2rem !important;
+  font-size: 1.1rem !important;
   /*background-color: #16a34a;*/
   font-weight: 600;
-  color: #374151;
+  /* color: green !important; */
   margin-bottom: 0.5rem;
 }
 
@@ -166,8 +170,8 @@ textarea.form-input {
   align-items: center;
   justify-content: center;
   padding: 0.75rem 1.5rem;
-  background-color: #e0e7ff;
-  color: #88b3eb;
+  background-color: rgba(0, 128, 0, 0.564);
+  color: white;
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -178,7 +182,7 @@ textarea.form-input {
 }
 
 .add-item-btn:hover {
-  background-color: #c7d2fe;
+  background-color: ;
 }
 
 .btn-icon {

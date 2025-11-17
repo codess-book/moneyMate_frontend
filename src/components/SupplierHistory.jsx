@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { FaBox, FaHistory } from "react-icons/fa";
+import React, { useEffect, useState, useMemo } from "react";
+import { FaBox, FaHistory, FaSearch, FaSpinner, FaInbox } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// import "../styles/logistic.css;"
+import "../styles/supplier.css"
+
+// import { useEffect, useMemo, useState } from "react";
 
 const API_URL = "http://localhost:5000/api/inventory";
 
@@ -10,26 +14,29 @@ export default function SupplierHistoryPage() {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [selectedItemName, setSelectedItemName] = useState("");
   const [history, setHistory] = useState([]);
+  const [loadingItems, setLoadingItems] = useState(true);
   const [loadingHistory, setLoadingHistory] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch all inventory items on mount
+  // Load all inventory items
   useEffect(() => {
+    setLoadingItems(true);
     fetch(`${API_URL}`)
       .then((res) => res.json())
       .then((data) => {
         setItems(data);
         if (data.length > 0) {
           setSelectedItemId(data[0]._id);
-          setSelectedItemName(data[0].item.name || data[0].item_name || "Item");
+          setSelectedItemName(data[0].item?.name || data[0].item_name);
         }
+        setLoadingItems(false);
       })
-      .catch(() => toast.error("Failed to load inventory items"));
+      .catch(() => setLoadingItems(false));
   }, []);
 
-  // Fetch supplier history when selectedItemId changes
+  // Load Supplier History
   useEffect(() => {
     if (!selectedItemId) return;
- console.log(selectedItemId)
     setLoadingHistory(true);
     fetch(`${API_URL}/supplier-history/${selectedItemId}`)
       .then((res) => res.json())
@@ -37,99 +44,142 @@ export default function SupplierHistoryPage() {
         setHistory(data);
         setLoadingHistory(false);
       })
-      .catch(() => {
-        toast.error("Failed to load supplier history");
-        setLoadingHistory(false);
-      });
+      .catch(() => setLoadingHistory(false));
   }, [selectedItemId]);
 
-  return (
-    <div className="min-h-screen bg-linear-to-b from-gray-900 to-gray-800 text-gray-100 p-6 flex flex-col md:flex-row max-w-7xl mx-auto gap-6">
-      <ToastContainer position="top-right" autoClose={3000} theme="dark" />
+  const filteredItems = useMemo(() => {
+    return items.filter((item) =>
+      (item.item?.name || item.item_name || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
+  }, [items, searchTerm]);
 
-      {/* Left panel: Items list */}
-      <div className="md:w-1/3 bg-gray-900 rounded-xl shadow-lg p-4 flex flex-col">
-        <h2 className="text-3xl font-bold mb-6 flex items-center gap-3 text-cyan-400">
-          <FaBox /> Inventory Items
-        </h2>
-        <ul className="flex-1 overflow-y-auto divide-y divide-gray-700">
-          {items.length === 0 && (
-            <li className="py-4 text-center text-gray-500 italic">
-              No inventory items found
-            </li>
+ return (
+  <div className="supplier-history-container">
+    <header className="page-header">
+      <h1 className="page-title">Supplier History</h1>
+      <p className="page-subtitle">Track every harvest purchase</p>
+    </header>
+
+    <div className="dashboard-layout">
+      {/* LEFT PANEL — ITEMS LIST */}
+      <div className="items-panel">
+        <div className="panel-header">
+          <h2 className="panel-title">
+            <span className="icon">📦</span> Items
+          </h2>
+        </div>
+        
+        <div className="search-container">
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search items..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <span className="search-icon">🔍</span>
+        </div>
+
+        <div className="items-list-container">
+          {loadingItems ? (
+            <div className="loading-state">
+              <div className="loading-spinner"></div>
+              <p>Loading items...</p>
+            </div>
+          ) : (
+            <div className="items-list">
+              {filteredItems.length === 0 ? (
+                <div className="empty-state">
+                  <p>No items found</p>
+                </div>
+              ) : (
+                filteredItems.map((item) => (
+                  <div
+                    key={item._id}
+                    className={`item-card ${selectedItemId === item._id ? 'selected' : ''}`}
+                    onClick={() => {
+                      setSelectedItemId(item._id);
+                      setSelectedItemName(
+                        item.item?.name || item.item_name || "Item"
+                      );
+                    }}
+                  >
+                    <div className="item-info">
+                      <h3 className="item-name">
+                        {item.item?.name || item.item_name}
+                      </h3>
+                      <p className="item-id">ID: {item._id}</p>
+                    </div>
+                    <div className="item-arrow">
+                      <span>→</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           )}
-          {items.map((item) => {
-            const itemName = item.item?.name || item.item_name || "Unnamed";
-            const isSelected = selectedItemId === item._id;
-            return (
-              <li
-                key={item._id}
-                className={`cursor-pointer px-4 py-3 rounded-lg mb-1 ${
-                  isSelected
-                    ? "bg-cyan-600 text-white font-semibold shadow-lg"
-                    : "hover:bg-gray-700"
-                }`}
-                onClick={() => {
-                  setSelectedItemId(item._id);
-                  setSelectedItemName(itemName);
-                }}
-              >
-                {itemName}
-              </li>
-            );
-          })}
-        </ul>
+        </div>
       </div>
 
-      {/* Right panel: Supplier history */}
-      <div className="md:w-2/3 bg-gray-900 rounded-xl shadow-lg p-6 flex flex-col">
-        <h2 className="text-3xl font-bold mb-6 flex items-center gap-3 text-green-400">
-          <FaHistory /> Supplier History for{" "}
-          <span className="ml-2 text-cyan-400">{selectedItemName}</span>
-        </h2>
+      {/* RIGHT PANEL — SUPPLIER HISTORY */}
+      <div className="history-panel">
+        <div className="panel-header">
+          <h2 className="panel-title">
+            <span className="icon">⏳</span> Purchase History — {selectedItemName}
+          </h2>
+        </div>
 
-        {loadingHistory ? (
-          <p className="text-center text-gray-400 mt-10">Loading history...</p>
-        ) : history.length === 0 ? (
-          <p className="text-center text-gray-400 italic mt-10">
-            No supplier history found for this item.
-          </p>
-        ) : (
-          <div className="overflow-y-auto max-h-[600px]">
-            <table className="w-full text-left text-gray-100 border-collapse">
-              <thead>
-                <tr className="border-b border-gray-700">
-                  <th className="py-3 px-4 font-semibold">Supplier Name</th>
-                  <th className="py-3 px-4 font-semibold">Phone</th>
-                  <th className="py-3 px-4 font-semibold">Address</th>
-                  <th className="py-3 px-4 font-semibold">Bought Price ($)</th>
-                  <th className="py-3 px-4 font-semibold">Quantity Added</th>
-                  <th className="py-3 px-4 font-semibold">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.map((entry) => (
-                  <tr
-                    key={entry._id}
-                    className="border-b border-gray-700 hover:bg-gray-700 transition"
-                  >
-                    <td className="py-3 px-4">{entry.supplierName}</td>
-                    <td className="py-3 px-4">{entry.supplierPhone}</td>
-                    <td className="py-3 px-4 max-w-xs truncate">
-                      {entry.supplierAddress || "-"}
-                    </td>
-                    <td className="py-3 px-4">${entry.boughtPrice.toFixed(2)}</td>
-                    <td className="py-3 px-4">{entry.quantityAdded}</td>
-                    <td className="py-3 px-4">
-                      {new Date(entry.createdAt).toLocaleDateString()}
-                    </td>
+        <div className="history-container">
+          {loadingHistory ? (
+            <div className="loading-state">
+              <div className="loading-spinner"></div>
+              <p>Loading history...</p>
+            </div>
+          ) : history.length === 0 ? (
+            <div className="empty-state">
+              <p>No history available for this item.</p>
+            </div>
+          ) : (
+            <div className="table-container">
+              <table className="history-table">
+                <thead>
+                  <tr>
+                    <th>Supplier</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Date</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody>
+                  {history.map((h, idx) => (
+                    <tr key={idx}>
+                      <td className="supplier-cell">
+                        <span className="supplier-name">{h.supplierName}</span>
+                      </td>
+                      <td className="phone-cell">
+                        <a href={`tel:${h.supplierPhone}`} className="phone-link">
+                          {h.supplierPhone}
+                        </a>
+                      </td>
+                      <td className="address-cell">{h.supplierAddress}</td>
+                      <td className="price-cell">${h.boughtPrice}</td>
+                      <td className="qty-cell">{h.quantityAdded}</td>
+                      <td className="date-cell">
+                        {new Date(h.date).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
-  );
+  </div>
+);
 }
