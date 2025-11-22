@@ -49,6 +49,7 @@ const Login = () => {
       toast.success('🚜 Welcome to Arya Krishi Farm!');
       
       localStorage.setItem('token', data.token);
+      console.log(data.token);
       navigate('/dashboard');
     } catch (error) {
       setErrors({ general: error.message || 'Invalid credentials' });
