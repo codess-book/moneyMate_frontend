@@ -1734,352 +1734,50 @@ const AddCustomer = () => {
   return (
     <div className="customer-management">
       {/* PRINT SECTION */}
-           {/* PROFESSIONAL PRINT BILL */}
       {printData && (
-        <div className="print-section" style={{ display: 'none' }}>
-          <div ref={printRef} style={{
-            position: 'relative',
-            padding: '40px',
-            fontFamily: "'Segoe UI', Arial, sans-serif",
-            maxWidth: '800px',
-            margin: '0 auto',
-            backgroundColor: '#fff',
-            color: '#333'
-          }}>
-            
-            {/* WATERMARK LOGO */}
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '400px',
-              height: '400px',
-              opacity: 0.05,
-              zIndex: 0,
-              backgroundImage: 'url(/logo.png)',
-              backgroundSize: 'contain',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-              pointerEvents: 'none'
-            }} />
+        <div className="print-section" style={{ display: "none" }}>
+          <div ref={printRef} style={{ padding: "20px", fontFamily: "Arial" }}>
+            <h2>Arya Krishi Seva Kendra</h2>
+            <p>Bill No: {printData.billNo}</p>
 
-            {/* HEADER */}
-            <div style={{
-              position: 'relative',
-              zIndex: 1,
-              textAlign: 'center',
-              borderBottom: '3px solid #2e7d32',
-              paddingBottom: '20px',
-              marginBottom: '30px'
-            }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '15px',
-                marginBottom: '10px'
-              }}>
-                <img src="/logo.png" alt="Logo" style={{ width: '60px', height: '60px' }} />
-                <h1 style={{
-                  margin: 0,
-                  fontSize: '32px',
-                  fontWeight: '700',
-                  color: '#2e7d32',
-                  letterSpacing: '-0.5px'
-                }}>
-                  Arya Krishi Seva Kendra
-                </h1>
-              </div>
-              <p style={{ margin: '5px 0', fontSize: '14px', color: '#666' }}>
-                📍 Village / Market Road, District Name
-              </p>
-              <p style={{ margin: '5px 0', fontSize: '14px', color: '#666' }}>
-                📞 70003 15367 | ✉️ contact@aryakrishi.com
-              </p>
-            </div>
+            <h3>Customer: {printData.customer.name}</h3>
+            <p>Phone: {printData.customer.phone}</p>
 
-            {/* BILL NUMBER & DATE */}
-            <div style={{
-              position: 'relative',
-              zIndex: 1,
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginBottom: '25px',
-              padding: '15px',
-              backgroundColor: '#f5f5f5',
-              borderRadius: '8px',
-              border: '1px solid #e0e0e0'
-            }}>
-              <div>
-                <strong style={{ color: '#2e7d32' }}>Bill No:</strong> {printData.billNo}
-              </div>
-              <div>
-                <strong style={{ color: '#2e7d32' }}>Date:</strong> {new Date(printData.paymentDate).toLocaleDateString('en-IN')}
-              </div>
-            </div>
-
-            {/* CUSTOMER DETAILS */}
-            <div style={{
-              position: 'relative',
-              zIndex: 1,
-              backgroundColor: '#f9fdf9',
-              padding: '20px',
-              borderRadius: '8px',
-              marginBottom: '25px',
-              border: '1px solid #e0e0e0',
-              borderLeft: '4px solid #2e7d32'
-            }}>
-              <h3 style={{
-                margin: '0 0 12px 0',
-                fontSize: '18px',
-                color: '#2e7d32',
-                fontWeight: '600'
-              }}>
-                Customer Details
-              </h3>
-              <div style={{ fontSize: '14px', lineHeight: '1.8' }}>
-                <div><strong>Name:</strong> {printData.customer.name}</div>
-                <div><strong>Phone:</strong> {printData.customer.phone}</div>
-                <div><strong>Address:</strong> {printData.customer.address}</div>
-              </div>
-            </div>
-
-            {/* ITEMS TABLE */}
-            <div style={{
-              position: 'relative',
-              zIndex: 1,
-              marginBottom: '25px',
-              overflowX: 'auto'
-            }}>
-              <table style={{
-                width: '100%',
-                borderCollapse: 'collapse',
-                fontSize: '14px',
-                border: '1px solid #e0e0e0'
-              }}>
-                <thead>
-                  <tr style={{
-                    backgroundColor: '#2e7d32',
-                    color: 'white'
-                  }}>
-                    <th style={{ padding: '12px 10px', textAlign: 'left', fontWeight: '600' }}>Product</th>
-                    <th style={{ padding: '12px 10px', textAlign: 'left', fontWeight: '600' }}>Category</th>
-                    <th style={{ padding: '12px 10px', textAlign: 'center', fontWeight: '600' }}>Qty</th>
-                    <th style={{ padding: '12px 10px', textAlign: 'right', fontWeight: '600' }}>Price</th>
-                    <th style={{ padding: '12px 10px', textAlign: 'right', fontWeight: '600' }}>Subtotal</th>
-                    <th style={{ padding: '12px 10px', textAlign: 'center', fontWeight: '600' }}>GST%</th>
-                    <th style={{ padding: '12px 10px', textAlign: 'right', fontWeight: '600' }}>GST Amt</th>
-                    <th style={{ padding: '12px 10px', textAlign: 'right', fontWeight: '600' }}>Total</th>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                  <th>GST%</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {printData.items.map((item, i) => (
+                  <tr key={i}>
+                    <td>{item.name}</td>
+                    <td>{item.quantity}</td>
+                    <td>₹{item.pricePerUnit}</td>
+                    <td>{item.gstRate}%</td>
+                    <td>₹{item.totalAmount.toFixed(2)}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {printData.items.map((item, i) => (
-                    <tr key={i} style={{
-                      backgroundColor: i % 2 === 0 ? '#fafafa' : 'white',
-                      borderBottom: '1px solid #e0e0e0'
-                    }}>
-                      <td style={{ padding: '10px', fontWeight: '500' }}>{item.name}</td>
-                      <td style={{ padding: '10px', color: '#666', fontSize: '13px' }}>{item.category || 'General'}</td>
-                      <td style={{ padding: '10px', textAlign: 'center' }}>{item.quantity} {item.unit}</td>
-                      <td style={{ padding: '10px', textAlign: 'right' }}>₹{item.pricePerUnit.toFixed(2)}</td>
-                      <td style={{ padding: '10px', textAlign: 'right' }}>₹{item.taxableAmount.toFixed(2)}</td>
-                      <td style={{ padding: '10px', textAlign: 'center', color: item.gstRate > 0 ? '#d32f2f' : '#2e7d32' }}>
-                        {item.gstRate}%
-                      </td>
-                      <td style={{ padding: '10px', textAlign: 'right', color: '#d32f2f' }}>
-                        ₹{item.gstAmount.toFixed(2)}
-                      </td>
-                      <td style={{ padding: '10px', textAlign: 'right', fontWeight: '600' }}>
-                        ₹{item.totalAmount.toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
 
-            {/* TOTALS SUMMARY */}
-            <div style={{
-              position: 'relative',
-              zIndex: 1,
-              display: 'flex',
-              justifyContent: 'flex-end',
-              marginBottom: '30px'
-            }}>
-              <div style={{
-                minWidth: '350px',
-                backgroundColor: '#f5f5f5',
-                padding: '20px',
-                borderRadius: '8px',
-                border: '1px solid #e0e0e0'
-              }}>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  padding: '8px 0',
-                  fontSize: '15px'
-                }}>
-                  <span>Subtotal:</span>
-                  <span style={{ fontWeight: '600' }}>₹{printData.subTotal.toFixed(2)}</span>
-                </div>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  padding: '8px 0',
-                  fontSize: '15px',
-                  borderBottom: '1px dashed #ccc'
-                }}>
-                  <span>Total GST:</span>
-                  <span style={{ fontWeight: '600', color: '#d32f2f' }}>₹{printData.totalGST.toFixed(2)}</span>
-                </div>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  padding: '12px 0',
-                  fontSize: '18px',
-                  fontWeight: '700',
-                  color: '#2e7d32'
-                }}>
-                  <span>Grand Total:</span>
-                  <span>₹{printData.grandTotal.toFixed(2)}</span>
-                </div>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  padding: '8px 0',
-                  fontSize: '15px',
-                  borderTop: '2px solid #2e7d32',
-                  marginTop: '8px',
-                  paddingTop: '12px'
-                }}>
-                  <span>Paid Amount:</span>
-                  <span style={{ fontWeight: '600', color: '#2e7d32' }}>₹{printData.paidAmount.toFixed(2)}</span>
-                </div>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  padding: '8px 0',
-                  fontSize: '16px',
-                  fontWeight: '700'
-                }}>
-                  <span>Balance Due:</span>
-                  <span style={{ color: printData.balanceAmount > 0 ? '#d32f2f' : '#2e7d32' }}>
-                    ₹{printData.balanceAmount.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* NEXT PAYMENT DATE */}
-            {printData.nextPaymentDate && (
-              <div style={{
-                position: 'relative',
-                zIndex: 1,
-                textAlign: 'center',
-                padding: '15px',
-                backgroundColor: '#fff3cd',
-                borderRadius: '8px',
-                marginBottom: '25px',
-                border: '1px solid #ffc107'
-              }}>
-                <strong style={{ color: '#856404' }}>Next Payment Date:</strong> {new Date(printData.nextPaymentDate).toLocaleDateString('en-IN')}
-              </div>
-            )}
-
-            {/* FOOTER SECTION */}
-            <div style={{
-              position: 'relative',
-              zIndex: 1,
-              borderTop: '2px solid #e0e0e0',
-              paddingTop: '25px',
-              marginTop: '30px'
-            }}>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                gap: '30px'
-              }}>
-                {/* QR CODE */}
-                <div style={{
-                  textAlign: 'center',
-                  flex: '0 0 auto'
-                }}>
-                  <div style={{
-                    width: '120px',
-                    height: '120px',
-                    backgroundColor: '#f5f5f5',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: '2px solid #2e7d32',
-                    fontSize: '11px',
-                    color: '#666'
-                  }}>
-                    <div>
-                      <div style={{ fontSize: '30px', marginBottom: '5px' }}>📱</div>
-                      <div style={{ fontWeight: '600' }}>Scan to Pay</div>
-                      <div>UPI / QR</div>
-                    </div>
-                  </div>
-                  <div style={{ marginTop: '10px', fontSize: '12px', color: '#666' }}>
-                    Payment Methods:<br/>
-                    UPI | Cash | Card
-                  </div>
-                </div>
-
-                {/* NOTE */}
-                <div style={{ flex: '1' }}>
-                  <div style={{
-                    backgroundColor: '#f9fdf9',
-                    padding: '15px',
-                    borderRadius: '8px',
-                    border: '1px solid #c8e6c9',
-                    borderLeft: '4px solid #2e7d32',
-                    fontSize: '13px',
-                    lineHeight: '1.6',
-                    color: '#555'
-                  }}>
-                    <div style={{ fontWeight: '700', color: '#2e7d32', marginBottom: '8px', fontSize: '14px' }}>
-                      📝 महत्वपूर्ण नोट:
-                    </div>
-                    <div style={{ marginBottom: '5px' }}>
-                      • कृपया अपनी शेष राशि का भुगतान अगली नियत तिथि से पहले करें।
-                    </div>
-                    <div style={{ marginBottom: '5px' }}>
-                      • सभी कृषि संबंधी आवश्यकताओं के लिए हमसे संपर्क करें।
-                    </div>
-                    <div style={{ marginBottom: '5px' }}>
-                      • बिल की कोई भी समस्या हो तो तुरंत संपर्क करें।
-                    </div>
-                    <div style={{ marginTop: '12px', fontWeight: '700', color: '#2e7d32', textAlign: 'center' }}>
-                      🙏 आपका व्यवसाय हमारे लिए महत्वपूर्ण है। धन्यवाद! 🙏
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* FINAL THANK YOU BAR */}
-              <div style={{
-                marginTop: '20px',
-                textAlign: 'center',
-                padding: '12px',
-                backgroundColor: '#2e7d32',
-                color: 'white',
-                borderRadius: '6px',
-                fontSize: '14px',
-                fontWeight: '600'
-              }}>
-                Thank you for your business! Visit Again! 🌾
-              </div>
+            <div style={{ marginTop: "20px" }}>
+              <p>Subtotal: ₹{printData.subTotal.toFixed(2)}</p>
+              <p>Total GST: ₹{printData.totalGST.toFixed(2)}</p>
+              <p>
+                <strong>Grand Total: ₹{printData.grandTotal.toFixed(2)}</strong>
+              </p>
+              <p>Paid: ₹{printData.paidAmount}</p>
+              <p>Balance: ₹{printData.balanceAmount.toFixed(2)}</p>
             </div>
           </div>
         </div>
       )}
-
-
 
       {/* MAIN FORM */}
       <div className="form-container">

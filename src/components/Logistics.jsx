@@ -19,6 +19,7 @@ export default function Inventory() {
   const [items, setItems] = useState([]);
   const [loadingSupplier, setLoadingSupplier] = useState(false);
 
+  const[isadditem,setIsAddItem]=useState(false);
   // const fetchSupplierByPhone = async (phone) => {
   //   if (!editingId || phone.length < 5) return; // Only during edit mode
 
@@ -147,6 +148,7 @@ export default function Inventory() {
 
   // Handler to open the modal for a new item, resetting the form
   const handleAddItemClick = () => {
+   setIsAddItem(true)
     setForm({
       item_name: "",
       quantity: "",
@@ -182,6 +184,8 @@ export default function Inventory() {
   // Add or update item (with optional supplier info)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    form.supplier_quantity=form.quantity
+    console.log("here",form.supplier_quantity)
     const {
       item_name,
       quantity,
@@ -194,7 +198,7 @@ export default function Inventory() {
       bought_price,
       supplier_quantity,
     } = form;
-    console.log(supplier_name, "supplier");
+    // console.log(supplier_name, "supplier");
 
     if (
       !item_name ||
@@ -261,6 +265,7 @@ export default function Inventory() {
       if (res.ok) {
         handleCloseModal();
         fetchItems();
+        setIsAddItem(false)
         toast.success(
           editingId ? "✅ Item Updated Successfully!" : "🎉 Item Added!"
         );
@@ -268,6 +273,7 @@ export default function Inventory() {
         toast.error("❌ Something went wrong!");
       }
     } catch {
+      setIsAddItem(false)
       toast.error("❌ Something went wrong!");
     }
   };
@@ -564,7 +570,7 @@ export default function Inventory() {
                       <option value="Fertilizers">Fertilizers</option>
                       <option value="Cattle Feed">Cattle Feed</option>
                       <option value="Seeds">Seeds</option>
-                      <option value="others">Others</option>
+                      <option value="Others">Others</option>
                     </select>
                   </div>
 
@@ -724,6 +730,9 @@ export default function Inventory() {
                   </div>
 
                   {/* Quantity to Add */}
+                 
+
+               {!isadditem &&
                   <div className="form-group">
                     <label className="form-label">Quantity to Add Now</label>
                     <input
@@ -743,6 +752,7 @@ export default function Inventory() {
                     />
                   </div>
 
+                    }
                   {/* Address */}
                   <div className="form-group full-width">
                     <label className="form-label">Supplier Address</label>
