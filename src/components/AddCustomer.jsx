@@ -1656,6 +1656,8 @@ const AddCustomer = () => {
 
         setPrintData(billData);
 
+        console.log("billdata", billData);
+
         // Print
         setTimeout(() => {
           if (printRef.current) {
@@ -1728,14 +1730,21 @@ const AddCustomer = () => {
     }),
   };
 
+  console.log("printdata", printData);
+
+  
   // ==========================================
   // RENDER
   // ==========================================
   return (
     <div className="customer-management">
       {/* PRINT SECTION */}
+
       {printData && (
-        <div className="print-section" style={{ display: "none" }}>
+        <div
+          className="print-section"
+          style={{ visibility: "hidden", position: "absolute", top: 0 }}
+        >
           <div ref={printRef} style={{ padding: "20px", fontFamily: "Arial" }}>
             <h2>Arya Krishi Seva Kendra</h2>
             <p>Bill No: {printData.billNo}</p>

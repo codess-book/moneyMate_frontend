@@ -20,48 +20,7 @@ export default function Inventory() {
   const [loadingSupplier, setLoadingSupplier] = useState(false);
 
   const[isadditem,setIsAddItem]=useState(false);
-  // const fetchSupplierByPhone = async (phone) => {
-  //   if (!editingId || phone.length < 5) return; // Only during edit mode
-
-  //   setLoadingSupplier(true);
-
-  //   try {
-  //     const res = await fetch(`${API_URL}/item/${editingId}/supplier/${phone}`);
-
-  //     if (res.ok) {
-  //       const data = await res.json();
-
-  //       const supplier = data.suppliers[0];
-
-  //       setForm((prev) => ({
-  //         ...prev,
-  //         supplier_name: supplier.supplierName,
-  //         address: supplier.supplierAddress,
-  //         bought_price: supplier.boughtPrice,
-  //         supplier_quantity: "",
-  //       }));
-
-  //       toast.success("Supplier exists");
-  //     } else {
-  //       // Supplier not found
-  //       setForm((prev) => ({
-  //         ...prev,
-  //         supplier_name: "",
-  //         address: "",
-  //         bought_price: "",
-  //         supplier_quantity: "",
-  //       }));
-
-  //       toast.info("New supplier");
-  //     }
-  //   } catch (err) {
-  //     toast.error("Error fetching supplier");
-  //   }
-
-  //   setLoadingSupplier(false);
-  // };
-
-  // Form state for add/edit item including supplier details
+  
 
   const fetchSupplierByPhone = async (phone) => {
     // Only run when EDITING
@@ -140,7 +99,7 @@ export default function Inventory() {
     }
   };
 
-  console.log(items, items.length);
+  
 
   useEffect(() => {
     fetchItems();
@@ -200,29 +159,29 @@ export default function Inventory() {
     } = form;
     // console.log(supplier_name, "supplier");
 
-    if (
-      !item_name ||
-      quantity === "" ||
-      stockAlert === "" ||
-      price === "" ||
-      supplier_name === ""
-    ) {
-      toast.warn("⚠️ Please fill all product inventory and pricing fields!");
-      return;
-    }
+    // if (
+    //   !item_name ||
+    //   quantity === "" ||
+    //   stockAlert === "" ||
+    //   price === "" ||
+    //   supplier_name === ""
+    // ) {
+    //   toast.warn("⚠️ Please fill all product inventory and pricing fields!");
+    //   return;
+    // }
 
     const hasSupplierInfo =
       supplier_name ||
       phone ||
       address ||
-      bought_price !== "" ||
-      supplier_quantity !== "";
+      bought_price !== "" ;
+      // supplier_quantity !== "";
 
     if (hasSupplierInfo) {
-      if (!supplier_quantity || Number(supplier_quantity) <= 0) {
-        toast.warn("⚠️ Please enter valid supplier quantity to add");
-        return;
-      }
+      // if (!supplier_quantity || Number(supplier_quantity) <= 0) {
+      //   toast.warn("⚠️ Please enter valid supplier quantity to add");
+      //   return;
+      // }
     }
 
     const method = editingId ? "PUT" : "POST";
