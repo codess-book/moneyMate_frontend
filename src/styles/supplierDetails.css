@@ -1,0 +1,51 @@
+.supplier-detail-container {
+  padding: 20px;
+  background: #f5f7fa;
+  min-height: 100vh;
+}
+
+.supplier-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.supplier-header h1 {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+}
+
+.sub {
+  color: #666;
+}
+
+.supplier-info-card,
+.purchase-history-card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.purchase-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.purchase-table th,
+.purchase-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.purchase-table tr:hover {
+  background: #f1f1f1;
+}
