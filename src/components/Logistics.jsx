@@ -1,15 +1,118 @@
 import React, { useEffect, useState } from "react";
-import { FaPlus, FaEdit, FaTrash, FaBoxOpen, FaClipboardList, FaSeedling, FaTag, FaWarehouse } from "react-icons/fa";
+import {
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaBoxOpen,
+  FaClipboardList,
+  FaSeedling,
+  FaTag,
+  FaWarehouse,
+} from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../styles/logistic.css"
+import "../styles/logistic.css";
 
 const API_URL = "http://localhost:5000/api/inventory";
 
 export default function Inventory() {
   const [items, setItems] = useState([]);
+  const [loadingSupplier, setLoadingSupplier] = useState(false);
+
+  // const fetchSupplierByPhone = async (phone) => {
+  //   if (!editingId || phone.length < 5) return; // Only during edit mode
+
+  //   setLoadingSupplier(true);
+
+  //   try {
+  //     const res = await fetch(`${API_URL}/item/${editingId}/supplier/${phone}`);
+
+  //     if (res.ok) {
+  //       const data = await res.json();
+
+  //       const supplier = data.suppliers[0];
+
+  //       setForm((prev) => ({
+  //         ...prev,
+  //         supplier_name: supplier.supplierName,
+  //         address: supplier.supplierAddress,
+  //         bought_price: supplier.boughtPrice,
+  //         supplier_quantity: "",
+  //       }));
+
+  //       toast.success("Supplier exists");
+  //     } else {
+  //       // Supplier not found
+  //       setForm((prev) => ({
+  //         ...prev,
+  //         supplier_name: "",
+  //         address: "",
+  //         bought_price: "",
+  //         supplier_quantity: "",
+  //       }));
+
+  //       toast.info("New supplier");
+  //     }
+  //   } catch (err) {
+  //     toast.error("Error fetching supplier");
+  //   }
+
+  //   setLoadingSupplier(false);
+  // };
 
   // Form state for add/edit item including supplier details
+
+  const fetchSupplierByPhone = async (phone) => {
+    // Only run when EDITING
+    if (!editingId) return;
+
+    // Only call API when full phone is typed
+    if (phone.length !== 10) return;
+
+    setLoadingSupplier(true);
+
+    try {
+      const res = await fetch(`${API_URL}/item/${editingId}/supplier/${phone}`);
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data, "data");
+
+        const supplier = data.supplier;
+
+        // last purchase entry
+        const lastPurchase =
+          supplier.purchaseHistory[supplier.purchaseHistory.length - 1];
+
+        setForm((prev) => ({
+          ...prev,
+          supplier_name: supplier.supplierName,
+          address: supplier.supplierAddress,
+          bought_price: lastPurchase.boughtPrice,
+          supplier_quantity: "",
+        }));
+
+        toast.success("Supplier exists");
+      } else {
+        // Supplier not found
+        setForm((prev) => ({
+          ...prev,
+          supplier_name: "",
+          address: "",
+          bought_price: "",
+          supplier_quantity: "",
+        }));
+
+        toast.info("New supplier");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Error fetching supplier");
+    }
+
+    setLoadingSupplier(false);
+  };
+
   const [form, setForm] = useState({
     item_name: "",
     quantity: "",
@@ -17,6 +120,7 @@ export default function Inventory() {
     price: "",
     supplier_name: "",
     phone: "",
+    category: "",
     address: "",
     bought_price: "",
     supplier_quantity: "",
@@ -27,13 +131,15 @@ export default function Inventory() {
 
   const fetchItems = async () => {
     try {
-      const res = await fetch(API_URL);
+      const res = await fetch(API_URL + "/allItems");
       const data = await res.json();
-      setItems(data);
+      setItems(data.items);
     } catch (err) {
       toast.error("Failed to load inventory!");
     }
   };
+
+  console.log(items, items.length);
 
   useEffect(() => {
     fetchItems();
@@ -83,12 +189,20 @@ export default function Inventory() {
       price,
       supplier_name,
       phone,
+      category,
       address,
       bought_price,
       supplier_quantity,
     } = form;
+    console.log(supplier_name, "supplier");
 
-    if (!item_name || quantity === "" || stockAlert === "" || price === "") {
+    if (
+      !item_name ||
+      quantity === "" ||
+      stockAlert === "" ||
+      price === "" ||
+      supplier_name === ""
+    ) {
       toast.warn("⚠️ Please fill all product inventory and pricing fields!");
       return;
     }
@@ -110,20 +224,23 @@ export default function Inventory() {
     const method = editingId ? "PUT" : "POST";
     const url = editingId ? `${API_URL}/${editingId}` : API_URL;
 
-    const initialQuantity = method === "POST" ? Number(quantity) : 0; 
-    
+    const initialQuantity = method === "POST" ? Number(quantity) : 0;
+    console.log(initialQuantity, "initial");
     const payload = {
       name: item_name,
-      quantity: initialQuantity, 
+      quantity: initialQuantity,
       stockAlert: Number(stockAlert),
       price: Number(price),
+      category: form.category,
     };
 
     if (hasSupplierInfo) {
       if (method === "PUT") {
-        payload.quantity = Number(items.find(item => item._id === editingId)?.quantity || 0) + Number(supplier_quantity);
+        payload.quantity =
+          Number(items.find((item) => item._id === editingId)?.quantity || 0) +
+          Number(supplier_quantity);
       }
-      
+
       payload.supplier = {
         name: supplier_name,
         phone,
@@ -132,7 +249,7 @@ export default function Inventory() {
         quantityAdded: Number(supplier_quantity),
       };
     } else if (method === "PUT") {
-        payload.quantity = Number(quantity);
+      payload.quantity = Number(quantity);
     }
 
     try {
@@ -144,7 +261,9 @@ export default function Inventory() {
       if (res.ok) {
         handleCloseModal();
         fetchItems();
-        toast.success(editingId ? "✅ Item Updated Successfully!" : "🎉 Item Added!");
+        toast.success(
+          editingId ? "✅ Item Updated Successfully!" : "🎉 Item Added!"
+        );
       } else {
         toast.error("❌ Something went wrong!");
       }
@@ -169,7 +288,10 @@ export default function Inventory() {
           >
             Yes
           </button>
-          <button onClick={() => toast.dismiss()} className="bg-gray-700 text-white px-3 py-1 rounded-md">
+          <button
+            onClick={() => toast.dismiss()}
+            className="bg-gray-700 text-white px-3 py-1 rounded-md"
+          >
             Cancel
           </button>
         </div>
@@ -180,11 +302,12 @@ export default function Inventory() {
 
   const handleEdit = (item) => {
     setForm({
-      item_name: item.item_name || item.item?.name || "",
-      quantity: item.quantity || "",
-      stockAlert: item.stockAlert || "",
+      item_name: item.name || item.item?.name || "",
+      quantity: item.currentStock || "",
+      stockAlert: item.lowStockAlert || "",
       price: item.price || "",
       supplier_name: "",
+      category: item.category,
       phone: "",
       address: "",
       bought_price: "",
@@ -229,312 +352,426 @@ export default function Inventory() {
         </div>
 
         {/* Inventory Card Grid View */}
- <div className="stock-overview">
-  <div className="section-header">
-    <FaWarehouse className="section-icon" />
-    <h2>Current Stock Overview</h2>
-  </div>
-
-  {items.length > 0 ? (
-    <div className="stock-grid">
-      {items.map((item) => {
-        const isLowStock = item.quantity <= item.stockAlert;
-        const isOutOfStock = item.quantity === 0;
-        const stockPercentage = Math.min(
-          (item.quantity / (item.stockAlert * 3)) * 100,
-          100
-        );
-
-        return (
-          <div key={item._id} className={`stock-card ${isLowStock ? 'low-stock' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}>
-            {/* Header */}
-            <div className="card-header">
-              <div className="item-info">
-                <h3 className="item-name">
-                  {item.item_name || item.item?.name}
-                </h3>
-                <div className="stock-status">
-                  <span className={`status-badge ${isOutOfStock ? 'out-of-stock' : isLowStock ? 'low-stock' : 'in-stock'}`}>
-                    {isOutOfStock ? "Out of Stock" : isLowStock ? "Low Stock" : "In Stock"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="card-content">
-              {/* Stock Level */}
-              <div className="stock-level">
-                <div className="stock-info">
-                  <span className="stock-label">Stock Level</span>
-                  <span className="stock-quantity">{item.quantity} units</span>
-                </div>
-
-                {/* Stock progress bar */}
-                <div className="progress-bar">
-                  <div
-                    className={`progress-fill ${isOutOfStock ? 'out-of-stock' : isLowStock ? 'low-stock' : 'in-stock'}`}
-                    style={{ width: `${stockPercentage}%` }}
-                  ></div>
-                </div>
-              </div>
-
-              {/* Details */}
-              <div className="item-details">
-                <div className="detail-item">
-                  <div className="detail-label">
-                    <FaWarehouse className="detail-icon" />
-                    <span>Current Stock</span>
-                  </div>
-                  <span className="detail-value">{item.quantity}</span>
-                </div>
-
-                <div className="detail-item">
-                  <div className="detail-label">
-                    <FaTag className="detail-icon" />
-                    <span>Price</span>
-                  </div>
-                  <span className="detail-value">₹{Number(item.price).toFixed(2)}</span>
-                </div>
-
-                <div className="detail-item">
-                  <div className="detail-label">
-                    <FaBoxOpen className="detail-icon" />
-                    <span>Alert Level</span>
-                  </div>
-                  <span className="detail-value">{item.stockAlert}</span>
-                </div>
-              </div>
-
-              {/* Buttons */}
-              <div className="card-actions">
-                <button 
-                  className="btn-edit"
-                  onClick={() => handleEdit(item)}
-                >
-                  <FaEdit className="btn-icon" />
-                  Edit
-                </button>
-
-                <button 
-                  className="btn-delete"
-                  onClick={() => handleDelete(item._id)}
-                >
-                  <FaTrash className="btn-icon" />
-                  Delete
-                </button>
-              </div>
-            </div>
+        <div className="stock-overview">
+          <div className="section-header">
+            <FaWarehouse className="section-icon" />
+            <h2>Current Stock Overview</h2>
           </div>
-        );
-      })}
-    </div>
-  ) : (
-    <div className="empty-state">
-      <div className="empty-content">
-        <div className="empty-icon">
-          <FaWarehouse />
-        </div>
-        <h3>No farm products in stock</h3>
-        <p>Get started by adding your first inventory item</p>
-        <button className="btn-primary">
-          <FaPlus className="btn-icon" />
-          Add New Item
-        </button>
-      </div>
-    </div>
-  )}
-</div>
-</div>
 
+          {items.length > 0 ? (
+            <div className="stock-grid">
+              {items.map((item) => {
+                const isLowStock = item.quantity <= item.stockAlert;
+                const isOutOfStock = item.quantity === 0;
+                const stockPercentage = Math.min(
+                  (item.quantity / (item.stockAlert * 3)) * 100,
+                  100
+                );
+
+                return (
+                  <div
+                    key={item._id}
+                    className={`stock-card ${isLowStock ? "low-stock" : ""} ${
+                      isOutOfStock ? "out-of-stock" : ""
+                    }`}
+                  >
+                    {/* Header */}
+                    <div className="card-header">
+                      <div className="item-info">
+                        <h3 className="item-name">{item.name}</h3>
+                        <p className="text-sm">{item.category}</p>
+                        <div className="stock-status">
+                          <span
+                            className={`status-badge ${
+                              isOutOfStock
+                                ? "out-of-stock"
+                                : isLowStock
+                                ? "low-stock"
+                                : "in-stock"
+                            }`}
+                          >
+                            {isOutOfStock
+                              ? "Out of Stock"
+                              : isLowStock
+                              ? "Low Stock"
+                              : "In Stock"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="card-content">
+                      {/* Stock Level */}
+                      <div className="stock-level">
+                        <div className="stock-info">
+                          <span className="stock-label">Stock Level</span>
+                          <span className="stock-quantity">
+                            {item.currentStock} units
+                          </span>
+                        </div>
+
+                        {/* Stock progress bar */}
+                        <div className="progress-bar">
+                          <div
+                            className={`progress-fill ${
+                              isOutOfStock
+                                ? "out-of-stock"
+                                : isLowStock
+                                ? "low-stock"
+                                : "in-stock"
+                            }`}
+                            style={{ width: `${stockPercentage}%` }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      {/* Details */}
+                      <div className="item-details">
+                        <div className="detail-item">
+                          <div className="detail-label">
+                            <FaWarehouse className="detail-icon" />
+                            <span>Current Stock</span>
+                          </div>
+                          <span className="detail-value">
+                            {item.currentStock}
+                          </span>
+                        </div>
+
+                        <div className="detail-item">
+                          <div className="detail-label">
+                            <FaTag className="detail-icon" />
+                            <span>Price</span>
+                          </div>
+                          <span className="detail-value">
+                            ₹{Number(item.price).toFixed(2)}
+                          </span>
+                        </div>
+
+                        <div className="detail-item">
+                          <div className="detail-label">
+                            <FaBoxOpen className="detail-icon" />
+                            <span>Alert Level</span>
+                          </div>
+                          <span className="detail-value">
+                            {item.lowStockAlert}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Buttons */}
+                      <div className="card-actions">
+                        <button
+                          className="btn-edit"
+                          onClick={() => handleEdit(item)}
+                        >
+                          <FaEdit className="btn-icon" />
+                          Edit
+                        </button>
+
+                        <button
+                          className="btn-delete"
+                          onClick={() => handleDelete(item._id)}
+                        >
+                          <FaTrash className="btn-icon" />
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="empty-state">
+              <div className="empty-content">
+                <div className="empty-icon">
+                  <FaWarehouse />
+                </div>
+                <h3>No farm products in stock</h3>
+                <p>Get started by adding your first inventory item</p>
+                <button className="btn-primary" onClick={handleAddItemClick}>
+                  <FaPlus className="btn-icon" />
+                  Add New Item
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Add / Edit Item Modal (Kept the highly polished form from the last step) */}
-    {showModal && (
-  <div className="modal-overlay">
-    <div className="modal-container">
-      {/* Modal Header */}
-      <div className="modal-header">
-        <div className="modal-title">
-          <FaSeedling className="modal-icon" />
-          <h2>{editingId ? "Update Product & Stock" : "New Farm Product Entry"}</h2>
-        </div>
-        <button 
-          className="modal-close-btn"
-          onClick={handleCloseModal}
-          aria-label="Close modal"
-        >
-          ✕
-        </button>
-      </div>
-
-      <form onSubmit={handleSubmit} className="modal-form">
-        {/* Product Inventory & Pricing */}
-        <fieldset className="form-section">
-          <legend className="section-legend">
-            <FaBoxOpen className="section-icon" />
-            Product Inventory & Pricing
-          </legend>
-          
-          <div className="form-grid">
-            {/* Item Name */}
-            <div className="form-group">
-              <label className="form-label">Product Name</label>
-              <input
-                type="text"
-                className="form-input"
-                placeholder="e.g. Organic Wheat Seeds"
-                value={form.item_name}
-                onChange={(e) => setForm({ ...form, item_name: e.target.value })}
-                required
-                disabled={!!editingId}
-              />
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-container">
+            {/* Modal Header */}
+            <div className="modal-header">
+              <div className="modal-title">
+                <FaSeedling className="modal-icon" />
+                <h2>
+                  {editingId
+                    ? "Update Product & Stock"
+                    : "New Farm Product Entry"}
+                </h2>
+              </div>
+              <button
+                className="modal-close-btn"
+                onClick={handleCloseModal}
+                aria-label="Close modal"
+              >
+                ✕
+              </button>
             </div>
 
-            {/* Selling Price */}
-            <div className="form-group">
-              <label className="form-label">Selling Price (₹)</label>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                className="form-input"
-                placeholder="0.00"
-                value={form.price}
-                onChange={(e) =>
-                  setForm({ ...form, price: e.target.value === "" ? "" : Number(e.target.value) })
-                }
-                required
-              />
-            </div>
+            <form onSubmit={handleSubmit} className="modal-form">
+              {/* Product Inventory & Pricing */}
+              <fieldset className="form-section">
+                <legend className="section-legend">
+                  <FaBoxOpen className="section-icon" />
+                  Product Inventory & Pricing
+                </legend>
 
-            {/* Current Quantity */}
-            <div className="form-group">
-              <label className="form-label">Current Stock Quantity</label>
-              <input
-                type="number"
-                min="0"
-                className="form-input"
-                placeholder="0"
-                value={form.quantity}
-                onChange={(e) =>
-                  setForm({ ...form, quantity: e.target.value === "" ? "" : Number(e.target.value) })
-                }
-                required
-                disabled={!!editingId}
-              />
-              {!!editingId && (
-                <p className="form-note">Edit mode: Current stock cannot be changed directly. Use "Quantity to Add".</p>
-              )}
-            </div>
+                <div className="form-grid">
+                  {/* Item Name */}
+                  <div className="form-group">
+                    <label className="form-label">Product Name</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      placeholder="e.g. Organic Wheat Seeds"
+                      value={form.item_name}
+                      onChange={(e) =>
+                        setForm({ ...form, item_name: e.target.value })
+                      }
+                      required
+                      disabled={!!editingId}
+                    />
+                  </div>
 
-            {/* Low Stock Alert */}
-            <div className="form-group">
-              <label className="form-label">Low Stock Alert Level</label>
-              <input
-                type="number"
-                min="0"
-                className="form-input"
-                placeholder="5"
-                value={form.stockAlert}
-                onChange={(e) =>
-                  setForm({ ...form, stockAlert: e.target.value === "" ? "" : Number(e.target.value) })
-                }
-                required
-              />
-            </div>
+                  {/* Category */}
+                  <div className="form-group">
+                    <label className="form-label">Category</label>
+                    <select
+                      className="form-input"
+                      value={form.category}
+                      onChange={(e) =>
+                        setForm({ ...form, category: e.target.value })
+                      }
+                      required
+                    >
+                      <option value="">Select Category</option>
+                      <option value="Pesticides">Pesticides</option>
+                      <option value="Fertilizers">Fertilizers</option>
+                      <option value="Cattle Feed">Cattle Feed</option>
+                      <option value="Seeds">Seeds</option>
+                      <option value="others">Others</option>
+                    </select>
+                  </div>
+
+                  {/* Selling Price */}
+                  <div className="form-group">
+                    <label className="form-label">Selling Price (₹)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      className="form-input"
+                      placeholder="0.00"
+                      value={form.price}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          price:
+                            e.target.value === "" ? "" : Number(e.target.value),
+                        })
+                      }
+                      required
+                    />
+                  </div>
+
+                  {/* Current Quantity */}
+                  <div className="form-group">
+                    <label className="form-label">Current Stock Quantity</label>
+                    <input
+                      type="number"
+                      min="0"
+                      className="form-input"
+                      placeholder="0"
+                      value={form.quantity}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          quantity:
+                            e.target.value === "" ? "" : Number(e.target.value),
+                        })
+                      }
+                      required
+                      disabled={!!editingId}
+                    />
+                    {!!editingId && (
+                      <p className="form-note">
+                        Edit mode: Current stock cannot be changed directly. Use
+                        "Quantity to Add".
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Low Stock Alert */}
+                  <div className="form-group">
+                    <label className="form-label">Low Stock Alert Level</label>
+                    <input
+                      type="number"
+                      min="0"
+                      className="form-input"
+                      placeholder="5"
+                      value={form.stockAlert}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          stockAlert:
+                            e.target.value === "" ? "" : Number(e.target.value),
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* Replenish & Supplier */}
+              <fieldset className="form-section">
+                <legend className="section-legend">
+                  <FaPlus className="section-icon" />
+                  Replenish Stock & Supplier Details
+                </legend>
+
+                <div className="form-grid">
+                  {/* Phone */}
+                  <div className="form-group">
+                    <label className="form-label">Phone Number</label>
+                    {/* <input
+                      type="tel"
+                      className="form-input"
+                      placeholder="Phone"
+                      value={form.phone}
+                      onChange={(e) =>
+                        setForm({ ...form, phone: e.target.value })
+                      }
+                    /> */}
+
+                    <input
+                      type="tel"
+                      className="form-input"
+                      placeholder="Phone"
+                      value={form.phone}
+                      onChange={(e) => {
+                        const phone = e.target.value;
+
+                        setForm({ ...form, phone });
+
+                        if (phone.length === 10) {
+                          fetchSupplierByPhone(phone);
+                        }
+
+                        if (phone.length < 10) {
+                          // clear auto-filled fields
+                          setForm((prev) => ({
+                            ...prev,
+                            supplier_name: "",
+                            address: "",
+                            bought_price: "",
+                            supplier_quantity: "",
+                          }));
+                        }
+                      }}
+                    />
+                  </div>
+
+                  {/* Supplier Name */}
+                  <div className="form-group">
+                    <label className="form-label">Supplier Name</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      placeholder="Supplier Name"
+                      value={form.supplier_name}
+                      onChange={(e) =>
+                        setForm({ ...form, supplier_name: e.target.value })
+                      }
+                      disabled={loadingSupplier}
+                    />
+                  </div>
+
+                  {/* Cost Per Unit */}
+                  <div className="form-group">
+                    <label className="form-label">Cost Per Unit (₹)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      className="form-input"
+                      placeholder="0.00"
+                      value={form.bought_price}
+                      disabled={loadingSupplier}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          bought_price:
+                            e.target.value === "" ? "" : Number(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+
+                  {/* Quantity to Add */}
+                  <div className="form-group">
+                    <label className="form-label">Quantity to Add Now</label>
+                    <input
+                      type="number"
+                      min="0"
+                      className="form-input"
+                      placeholder="0"
+                      value={form.supplier_quantity}
+                      disabled={loadingSupplier}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          supplier_quantity:
+                            e.target.value === "" ? "" : Number(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+
+                  {/* Address */}
+                  <div className="form-group full-width">
+                    <label className="form-label">Supplier Address</label>
+                    <textarea
+                      className="form-textarea"
+                      placeholder="Full Address"
+                      value={form.address}
+                      disabled={loadingSupplier}
+                      onChange={(e) =>
+                        setForm({ ...form, address: e.target.value })
+                      }
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* Submit Button */}
+              <div className="form-actions">
+                <button type="submit" className="submit-btn">
+                  {editingId
+                    ? "Update Item & Stock"
+                    : "Confirm & Add Inventory"}
+                </button>
+              </div>
+            </form>
           </div>
-        </fieldset>
-
-        {/* Replenish & Supplier */}
-        <fieldset className="form-section">
-          <legend className="section-legend">
-            <FaPlus className="section-icon" />
-            Replenish Stock & Supplier Details
-          </legend>
-          
-          <div className="form-grid">
-            {/* Supplier Name */}
-            <div className="form-group">
-              <label className="form-label">Supplier Name</label>
-              <input
-                type="text"
-                className="form-input"
-                placeholder="Supplier Name"
-                value={form.supplier_name}
-                onChange={(e) => setForm({ ...form, supplier_name: e.target.value })}
-              />
-            </div>
-
-            {/* Phone */}
-            <div className="form-group">
-              <label className="form-label">Phone Number</label>
-              <input
-                type="tel"
-                className="form-input"
-                placeholder="Phone"
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              />
-            </div>
-
-            {/* Cost Per Unit */}
-            <div className="form-group">
-              <label className="form-label">Cost Per Unit (₹)</label>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                className="form-input"
-                placeholder="0.00"
-                value={form.bought_price}
-                onChange={(e) =>
-                  setForm({ ...form, bought_price: e.target.value === "" ? "" : Number(e.target.value) })
-                }
-              />
-            </div>
-
-            {/* Quantity to Add */}
-            <div className="form-group">
-              <label className="form-label">Quantity to Add Now</label>
-              <input
-                type="number"
-                min="0"
-                className="form-input"
-                placeholder="0"
-                value={form.supplier_quantity}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    supplier_quantity: e.target.value === "" ? "" : Number(e.target.value),
-                  })
-                }
-              />
-            </div>
-
-            {/* Address */}
-            <div className="form-group full-width">
-              <label className="form-label">Supplier Address</label>
-              <textarea
-                className="form-textarea"
-                placeholder="Full Address"
-                value={form.address}
-                onChange={(e) => setForm({ ...form, address: e.target.value })}
-                rows={3}
-              />
-            </div>
-          </div>
-        </fieldset>
-
-        {/* Submit Button */}
-        <div className="form-actions">
-          <button type="submit" className="submit-btn">
-            {editingId ? "Update Item & Stock" : "Confirm & Add Inventory"}
-          </button>
         </div>
-      </form>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 }

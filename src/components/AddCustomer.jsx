@@ -131,7 +131,7 @@ const AddCustomer = () => {
     //axios.get(`${import.meta.env.VITE_API_URL}/api/items`)
     //console.log("API BASE URL:", import.meta.env.VITE_API_URL);
     axios
-      .get(`${apiBaseUrl}/api/items`)
+      .get(`${apiBaseUrl}/api/inventory/allItems`)
 
       //yha change kra
       //axios.get("http://localhost:8080/api/items")
