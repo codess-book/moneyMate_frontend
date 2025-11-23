@@ -143,7 +143,7 @@ export default function Inventory() {
   // Add or update item (with optional supplier info)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    form.supplier_quantity=form.quantity
+    // form.supplier_quantity=form.quantity
     console.log("here",form.supplier_quantity)
     const {
       item_name,

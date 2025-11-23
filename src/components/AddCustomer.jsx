@@ -1437,9 +1437,11 @@ const AddCustomer = () => {
         // Auto-fill from inventory
         newItems[index] = {
           ...newItems[index],
+          itemId: product._id,
           name: product.name,
           pricePerUnit: product.price || "",
           unit: product.unit || "",
+          category: product.category,
         };
       } else {
         // Manual entry
@@ -1730,9 +1732,8 @@ const AddCustomer = () => {
     }),
   };
 
-  console.log("printdata", printData);
+  // console.log("printdata", printData);
 
-  
   // ==========================================
   // RENDER
   // ==========================================
@@ -1873,9 +1874,15 @@ const AddCustomer = () => {
                 ? allProducts.filter((p) => p.category === item.category)
                 : allProducts;
 
+              // const productOptions = filteredProducts.map((p) => ({
+
+              //   value: p.name,
+              //   label: `${p.name} - ₹${p.price || 0}/${p.unit || "unit"}`,
+              // }));
               const productOptions = filteredProducts.map((p) => ({
-                value: p.name,
-                label: `${p.name} - ₹${p.price || 0}/${p.unit || "unit"}`,
+                value: p._id,
+                label: `${p.name} - ₹${p.price}/${p.unit}`,
+                product: p,
               }));
 
               return (
