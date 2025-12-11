@@ -1622,6 +1622,7 @@ const AddCustomer = () => {
         })),
       };
 
+
       const response = await axios.post(
         `${apiBaseUrl}/api/customers/add`,
         payload,
@@ -1658,12 +1659,12 @@ const AddCustomer = () => {
 
         console.log("billdata", billData);
 
-        // Print
-        setTimeout(() => {
-          if (printRef.current) {
-            window.print();
-          }
-        }, 300);
+        // // Print
+        // setTimeout(() => {
+        //   if (printRef.current) {
+        //     window.print();
+        //   }
+        // }, 300);
 
         // Toast
         toast.success(
@@ -1696,9 +1697,9 @@ const AddCustomer = () => {
         ]);
 
         // Navigate
-        setTimeout(() => {
-          navigate("/dashboard/viewCustomers");
-        }, 500);
+        // setTimeout(() => {
+        //   navigate("/dashboard/viewCustomers");
+        // }, 500);
       }
     } catch (err) {
       const errorMessage =
@@ -1709,6 +1710,23 @@ const AddCustomer = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (printData) {
+      console.log("printData updated, triggering print...");
+      const timer = setTimeout(() => {
+        if (printRef.current) {
+          console.log("Calling window.print()");
+          window.print();
+          setPrintData(null);
+        } else {
+          console.log("printRef.current not found");
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [printData]);
+
 
   // ==========================================
   // CUSTOM SELECT STYLES
@@ -1732,7 +1750,7 @@ const AddCustomer = () => {
 
   console.log("printdata", printData);
 
-  
+
   // ==========================================
   // RENDER
   // ==========================================
