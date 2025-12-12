@@ -1,12 +1,13 @@
+/* Farmers Agro Theme Variables */
 /* Dashboard Base Styles */
 :root {
-  --neon-primary: #08f;
-  --neon-secondary: #0ff;
+  --neon-primary: green;
+  --neon-secondary:green;
   --neon-accent: #f0f;
   --neon-error: #f03;
-  --bg-dark: #0a0a12;
-  --bg-darker: #050508;
-  --bg-darkest: #020205;
+  --bg-dark: green;
+  --bg-darker: green;
+  --bg-darkest:white;
   --text-glow: rgba(0, 255, 255, 0.8);
   --sidebar-width: 250px;
   --sidebar-collapsed-width: 80px;
@@ -14,22 +15,18 @@
   --transition-speed: 0.3s;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Orbitron', 'Rajdhani', sans-serif;
-}
+
 
 body {
-  background-color: var(--bg-darker);
-  color: white;
+  background-color: white;
+  color:green;
 }
 
 /* Dashboard Container */
 .dashboard-container {
   display: flex;
   flex-direction: column;
+ 
   min-height: 100vh;
   position: relative;
 }
@@ -41,9 +38,9 @@ body {
   align-items: center;
   height: var(--navbar-height);
   padding: 0 20px;
-  background-color: var(--bg-dark);
-  border-bottom: 1px solid rgba(0, 200, 255, 0.2);
-  box-shadow: 0 0 10px rgba(0, 200, 255, 0.1);
+  background-color: white;
+  border-bottom: 1px solid rgba(24, 26, 23, 0.2);
+  box-shadow: 0 0 10px rgba(28, 28, 28, 0.1);
   z-index: 100;
   position: fixed;
   width: 100%;
@@ -90,8 +87,8 @@ body {
 
 .neon-input:focus {
   outline: none;
-  border-color: var(--neon-primary);
-  box-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+  border-color: black;
+  box-shadow: 0 0 10px rgba(10, 10, 10, 0.5);
 }
 
 .neon-button-icon {
@@ -161,7 +158,7 @@ body {
   top: 15px;
   left: 15px;
   z-index: 1000;
-  background-color: var(--bg-dark);
+  /* background-color: var(--bg-dark); */
   border: 1px solid var(--neon-primary);
   border-radius: 4px;
   padding: 8px;

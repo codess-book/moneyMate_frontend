@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FiPhone, FiHome, FiDollarSign, FiClock, FiChevronRight } from "react-icons/fi";
+import {
+  FiPhone,
+  FiHome,
+  FiDollarSign,
+  FiClock,
+  FiChevronRight,
+} from "react-icons/fi";
 import "../styles/CustomerDetails.css";
 const apiBaseUrl = import.meta.env.VITE_API_URL;
 
@@ -10,29 +16,39 @@ const CustomerDetail = () => {
   console.log("CustomerDetail mounted, id =", id);
   const navigate = useNavigate();
 
-
   const [customer, setCustomer] = useState(null);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedRow, setExpandedRow] = useState(null);
+  const[isScrolled, setIsScrolled]=useState(false);
 
-const toggleExpand = (idx) => {
-  setExpandedRow(expandedRow === idx ? null : idx);
-};
+  const toggleExpand = (idx) => {
+    setExpandedRow(expandedRow === idx ? null : idx);
+  };
 
+  // handle scroll for header shadow
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const fetchCustomer = async () => {
-        console.log("About to fetch /api/payment/customer/" + id);
+      console.log("About to fetch /api/payment/customer/" + id);
       try {
         const token = localStorage.getItem("token");
+        console.log("token",token);
         const res = await axios.get(
-        `${apiBaseUrl}/api/payment/customer/${id}`,
+          `${apiBaseUrl}/api/payment/customer/${id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setCustomer(res.data.customer);
         setPayments(res.data.payments);
-        //console.log( ".....",  res.data.customer);
+        console.log("payment",res.data.payments);
+        console.log(".....", res.data.customer);
         //console.log("✅ Fetched payments:", res.data.payments.length, res.data.payments)
       } catch (err) {
         //console.error("Failed to fetch customer:", err);
@@ -53,36 +69,36 @@ const toggleExpand = (idx) => {
   const totalRemaining = customer.remainingAmount || 0;
   const paymentComplete = totalRemaining <= 0;
 
-
-
   //to handle customer history
 
   const handleExportCustomerHistory = async () => {
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    const res = await fetch(`${apiBaseUrl}/api/export/customer/${customer._id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      const res = await fetch(
+        `${apiBaseUrl}/api/export/customer/${customer._id}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    if (!res.ok) throw new Error("Export failed");
+      if (!res.ok) throw new Error("Export failed");
 
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${customer.name}-history.xlsx`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-  } catch (err) {
-    alert("❌ Failed to export customer history.");
-    console.error(err);
-  }
-};
-
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${customer.name}-history.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert("❌ Failed to export customer history.");
+      console.error(err);
+    }
+  };
 
   return (
     <div className="customer-detail-container">
@@ -92,21 +108,15 @@ const toggleExpand = (idx) => {
         </button>
         <h2>Customer Details</h2>
       </div>
-    {/*<button 
-  onClick={handleExportCustomerHistory}
-  className="export-btn"
->
-  <i class="fas fa-file-export"></i>
-  Export History
-</button>*/}
-<button 
-  onClick={handleExportCustomerHistory}
-  className="export-all-btn"
-  title="Export All Customers Data"
->
-  <i className="fas fa-file-export"></i>
-  <span> Export History</span>
-</button>
+     
+      <button
+        onClick={handleExportCustomerHistory}
+        className="export-all-btn"
+        title="Export All Customers Data"
+      >
+        <i className="fas fa-file-export"></i>
+        <span> Export History</span>
+      </button>
       <div className="customer-profile">
         <div className="profile-header">
           <div className="avatar">{customer.name?.charAt(0)}</div>
@@ -114,8 +124,12 @@ const toggleExpand = (idx) => {
             <h3>{customer.name}</h3>
             <p className="customer-id">ID: {customer.phone?.slice(-6)}</p>
           </div>
-          <div className={`status-badge ${paymentComplete ? 'complete' : 'pending'}`}>
-            {paymentComplete ? 'Payment Complete' : 'Payment Pending'}
+          <div
+            className={`status-badge ${
+              paymentComplete ? "complete" : "pending"
+            }`}
+          >
+            {paymentComplete ? "Payment Complete" : "Payment Pending"}
           </div>
         </div>
 
@@ -140,7 +154,9 @@ const toggleExpand = (idx) => {
             <FiDollarSign className="info-icon" />
             <div>
               <p className="info-label">Total Amount</p>
-              <p className="info-value">₹{(customer.totalAmount || 0).toLocaleString()}</p>
+              <p className="info-value">
+                ₹{(customer.totalAmount || 0).toLocaleString()}
+              </p>
             </div>
           </div>
 
@@ -148,7 +164,9 @@ const toggleExpand = (idx) => {
             <FiDollarSign className="info-icon" />
             <div>
               <p className="info-label">Total Paid</p>
-              <p className="info-value success">₹{totalPaid.toLocaleString()}</p>
+              <p className="info-value success">
+                ₹{totalPaid.toLocaleString()}
+              </p>
             </div>
           </div>
 
@@ -156,7 +174,13 @@ const toggleExpand = (idx) => {
             <FiDollarSign className="info-icon" />
             <div>
               <p className="info-label">Remaining</p>
-              <p className={`info-value ${paymentComplete ? 'success' : 'danger'}`}>₹{totalRemaining.toLocaleString()}</p>
+              <p
+                className={`info-value ${
+                  paymentComplete ? "success" : "danger"
+                }`}
+              >
+                ₹{totalRemaining.toLocaleString()}
+              </p>
             </div>
           </div>
 
@@ -167,7 +191,7 @@ const toggleExpand = (idx) => {
               <p className="info-value">
                 {customer.lastPaymentDate
                   ? new Date(customer.lastPaymentDate).toLocaleDateString()
-                  : 'No payments'}
+                  : "No payments"}
               </p>
             </div>
           </div>
@@ -180,69 +204,91 @@ const toggleExpand = (idx) => {
       </div>
 
       <div className="payment-history">
+        
         {payments.length > 0 ? (
           <>
             <div className="history-table">
               <div className="table-header">
                 <div>Date</div>
+                <div>SubTotal</div>
+                <div>Totat GST</div>
+                <div>Grand Total</div>
                 <div>Paid Amount</div>
-                   <div>Items Purchased</div> 
+                <div>Remaining Amount</div>
+                
                 {/*<div>Remaining</div>*/}
                 <div>Status</div>
               </div>
               {payments.map((entry, idx) => (
                 <div className="table-row" key={idx}>
                   <div>{new Date(entry.paymentDate).toLocaleDateString()}</div>
-                  <div className="amount">₹{entry.amountPaid.toLocaleString()}</div>
-                  {/*<div className="amount">₹{entry.remainingAmount.toLocaleString()}</div>*/}
-                    {/*<div className="amount">
-      ₹{(entry.totalAmount && entry.amountPaid)
-        ? (entry.totalAmount - entry.amountPaid).toLocaleString()
-        : "N/A"}  
-    </div>*/}
-                {/*//for items*/}
+                 
+                  <div className="amount">
+                    ₹{entry.subTotal.toLocaleString()}
+                  </div>
+                  <div className="amount">
+                    ₹{entry.totalGST.toLocaleString()}
+                  </div>
+                    <div className="amount">
+                    ₹{entry.grandTotal.toLocaleString()}
+                  </div>
+                  <div className="amount">
+                    ₹{entry.amountPaid.toLocaleString()}
+                  </div>
+                   <div className="amount">
+                    ₹{entry.dueAmount.toLocaleString()}
+                  </div>
                 
-                      <div className="items-column">
-      {entry.items?.length > 0 ? (
-        <>
-          <div className="items-list">
-            {entry.items.slice(0, 2).map((item, i) => (
-              <span key={i} className="item-tag">
-                {item.name} ({item.quantity})
-              </span>
-            ))}
-            {entry.items.length > 2 && (
-              <button 
-                onClick={() => toggleExpand(idx)}
-                className="more-items-btn"
-              >
-                +{entry.items.length - 2} more
-              </button>
-            )}
-          </div>
-          
-          {/* Expanded Items (when clicked) */}
-          {expandedRow === idx && (
-            <div className="expanded-items">
-              {entry.items.slice(2).map((item, i) => (
-                <div key={i} className="full-item">
-                  <span>{item.name}</span>
-                  <span>Qty: {item.quantity}</span>
-                  {item.price && <span>₹{item.price}</span>}
-                </div>
-              ))}
-            </div>
-          )}
-        </>
-      ) : (
-        <span className="no-items">No items</span>
-      )}
-    </div>
+                  {/*//for items*/}
 
+                  <div className="items-column">
+                    {entry.items?.length > 0 ? (
+                      <>
+                        <div className="items-list">
+                          {entry.items.slice(0, 2).map((item, i) => (
+                            <span key={i} className="item-tag">
+                              {item.name} (qty:{item.quantity}) (price:{item.pricePerUnit}) (before gst total{item.taxableAmount}) (gst rate:{item.gstRate})  (grandtotal:{item.totalAmount})
+                            </span>
+                          ))}
+                          {entry.items.length > 2 && (
+                            <button
+                              onClick={() => toggleExpand(idx)}
+                              className="more-items-btn"
+                            >
+                              +{entry.items.length - 2} more
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Expanded Items (when clicked) */}
+                        {expandedRow === idx && (
+                          <div className="expanded-items">
+                            {entry.items.slice(2).map((item, i) => (
+                              <div key={i} className="full-item">
+                                <span>{item.name}</span>
+                                <span>Qty: {item.quantity}</span>
+                                {item.price && <span>₹{item.price}</span>}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <span className="no-items">No items</span>
+                    )}
+                  </div>
 
                   <div>
-                    <span className={`payment-status ${idx === payments.length - 1 && entry.remainingAmount > 0 ? 'pending' : 'completed'}`}>
-                      {idx === payments.length - 1 && entry.remainingAmount > 0 ? 'Pending' : 'Completed'}
+                    <span
+                      className={`payment-status ${
+                        idx === payments.length - 1 && entry.remainingAmount > 0
+                          ? "pending"
+                          : "completed"
+                      }`}
+                    >
+                      {idx === payments.length - 1 && entry.remainingAmount > 0
+                        ? "Pending"
+                        : "Completed"}
                     </span>
                   </div>
                 </div>
@@ -252,11 +298,17 @@ const toggleExpand = (idx) => {
             <div className="payment-summary">
               <div className="summary-item">
                 <p>Total Paid</p>
-                <p className="amount" style={{color:'green'}}>₹{totalPaid.toLocaleString()}</p>
+                <p className="amount" style={{ color: "green" }}>
+                  ₹{totalPaid.toLocaleString()}
+                </p>
               </div>
               <div className="summary-item">
                 <p>Remaining Balance</p>
-                <p className={`amount ${paymentComplete ? 'success' : 'danger'}`}>₹{totalRemaining.toLocaleString()}</p>
+                <p
+                  className={`amount ${paymentComplete ? "success" : "danger"}`}
+                >
+                  ₹{totalRemaining.toLocaleString()}
+                </p>
               </div>
             </div>
           </>

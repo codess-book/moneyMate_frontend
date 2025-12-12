@@ -1,9 +1,29 @@
+@import "tailwindcss";
+/* index.css or main.css */
 
+/* @tailwind base;
+@tailwind components; */
+@tailwind utilities;
+
+/* Any other global styles */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
+
+
+.custom-gradient-button {
+    background-color: #5cb85c;
+    background-image: linear-gradient(to bottom, #69d469 0%, #5cb85c 100%);
+    border: 1px solid #4cae4c;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+.custom-gradient-button:hover {
+    background-image: linear-gradient(to bottom, #5cb85c 0%, #4cae4c 100%);
+}
+
 
 body {
   font-family: 'Segoe UI', sans-serif;
@@ -32,4 +52,29 @@ body {
   padding: 5px 10px;
   margin-left: 10px;
   cursor: pointer;
+}
+
+/* for printing bill */
+.print-section {
+  display: none;
+}
+
+@media print {
+  .print-section {
+    display: block !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .print-section, .print-section * {
+    visibility: visible;
+  }
+
+  .print-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 }
