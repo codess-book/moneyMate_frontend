@@ -53,3 +53,28 @@ body {
   margin-left: 10px;
   cursor: pointer;
 }
+
+/* for printing bill */
+.print-section {
+  display: none;
+}
+
+@media print {
+  .print-section {
+    display: block !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .print-section, .print-section * {
+    visibility: visible;
+  }
+
+  .print-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
