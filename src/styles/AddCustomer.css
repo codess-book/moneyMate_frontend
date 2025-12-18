@@ -1,14 +1,409 @@
 .print-section {
-  display: none; /* hide on screen */
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: white;
 }
 
-@media print {
-  .print-section {
-    display: block !important; /* show only during print */
-  }
 
-  /* Optionally hide everything else during print */
-  body *:not(.print-section):not(.print-section *) {
-    display: none !important;
+
+.invoice-container {
+  width: 100%;
+  max-width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+  background: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Header Styles */
+.invoice-header {
+  margin-bottom: 20px;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+.company-branding {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.logo-wrapper {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 5px;
+  background: white;
+}
+
+.company-logo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.company-name {
+  margin-bottom: 8px;
+}
+
+.company-name-main {
+  display: block;
+  font-size: 24px;
+  color: #1a5f23;
+  font-weight: bold;
+}
+
+.company-tagline {
+  display: block;
+  font-size: 14px;
+  color: #666;
+  font-weight: normal;
+  margin-top: 4px;
+}
+
+/* Option 2 के लिए CSS */
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.header-logo {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 5px;
+}
+
+.company-name {
+  font-size: 24px;
+  color: #1a5f23;
+  margin: 0;
+}
+
+/* Print के लिए adjustments */
+@media print {
+  .logo-wrapper, .header-logo {
+    border: 1px solid #ccc;
+  }
+  
+  .company-logo, .header-logo {
+    max-width: 70px;
+    max-height: 70px;
+  }
+  
+  .company-name-main {
+    font-size: 20px;
+  }
+}
+
+
+.contact-details {
+  display: flex;
+  gap: 15px;
+  font-size: 11px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.invoice-info {
+  text-align: right;
+}
+
+.invoice-title {
+  font-size: 24px;
+  color: #333;
+  margin: 0 0 10px 0;
+  border-bottom: 2px solid #1a5f23;
+  padding-bottom: 5px;
+}
+
+.invoice-meta {
+  font-size: 12px;
+}
+
+.meta-item {
+  margin-bottom: 3px;
+}
+
+.meta-label {
+  color: #666;
+  margin-right: 8px;
+}
+
+.meta-value {
+  font-weight: bold;
+  color: #333;
+}
+
+.header-divider {
+  height: 1px;
+  background: linear-gradient(to right, #1a5f23, #ddd);
+  margin: 15px 0;
+}
+
+.customer-info-section {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.bill-to h3, .delivery-info h3 {
+  font-size: 14px;
+  color: #1a5f23;
+  margin: 0 0 8px 0;
+}
+
+.customer-details p {
+  margin: 2px 0;
+  font-size: 13px;
+}
+
+.delivery-info p {
+  margin: 2px 0;
+  font-size: 12px;
+}
+
+/* Table Styles */
+.items-table-container {
+  width: 100%;
+  margin: 20px 0;
+}
+
+.invoice-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.invoice-items-table thead {
+  background-color: #1a5f23;
+  color: white;
+}
+
+.invoice-items-table th {
+  padding: 8px 4px;
+  text-align: left;
+  font-weight: 600;
+  border: 1px solid #ddd;
+}
+
+.invoice-items-table tbody tr {
+  border-bottom: 1px solid #eee;
+}
+
+.invoice-items-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.invoice-items-table td {
+  padding: 6px 4px;
+  border: 1px solid #eee;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* Footer/Summary Styles */
+.invoice-summary {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #1a5f23;
+  position: absolute;
+  bottom: 20px;
+  width: calc(100% - 40px);
+}
+
+.summary-left {
+  flex: 1;
+  padding-right: 30px;
+}
+
+.payment-instructions {
+  font-size: 11px;
+  color: #555;
+}
+
+.payment-instructions h4 {
+  color: #1a5f23;
+  margin: 0 0 8px 0;
+  font-size: 13px;
+}
+
+.payment-instructions ul {
+  margin: 0 0 15px 0;
+  padding-left: 15px;
+}
+
+.payment-instructions li {
+  margin-bottom: 3px;
+}
+
+.signature-section {
+  margin-top: 25px;
+}
+
+.signature-line {
+  width: 200px;
+  height: 1px;
+  background: #333;
+  margin: 5px 0;
+}
+
+.summary-right {
+  width: 300px;
+}
+
+.amounts-summary {
+  background: #f5f9f5;
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.total-row, .due-row {
+  border-top: 1px solid #ddd;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.total-row span, .due-row span {
+  font-size: 14px;
+}
+
+.qr-section {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.qr-placeholder {
+  display: inline-block;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: white;
+}
+
+.qr-box {
+  width: 100px;
+  height: 100px;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px auto;
+}
+
+.qr-box img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.qr-note {
+  font-size: 10px;
+  color: #666;
+  margin: 3px 0 0 0;
+}
+
+/* Print-specific styles */
+@media print {
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+  
+  .print-section {
+    box-shadow: none;
+  }
+  
+  .invoice-container {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+  }
+  
+  /* Ensure header only appears on first page */
+  .first-page-header {
+    page-break-after: avoid;
+  }
+  
+  /* Prevent table from breaking inside rows */
+  .invoice-items-table tr {
+    page-break-inside: avoid;
+  }
+  
+  /* Ensure summary stays on last page */
+  .invoice-summary {
+    position: relative;
+    bottom: auto;
+    page-break-before: avoid;
+  }
+  
+  /* Adjust spacing for print */
+  .invoice-items-table {
+    font-size: 10px;
+  }
+  
+  .invoice-items-table th,
+  .invoice-items-table td {
+    padding: 4px 3px;
+  }
+}
+
+/* Additional page handling for long tables */
+@media print {
+  .invoice-items-table {
+    page-break-inside: auto;
+  }
+  
+  .invoice-items-table tbody tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+  
+  /* Add header for subsequent pages */
+  .invoice-container::after {
+    content: "";
+    display: table;
+    clear: both;
   }
 }

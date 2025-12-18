@@ -20,10 +20,14 @@ const CustomerDetail = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedRow, setExpandedRow] = useState(null);
-  const[isScrolled, setIsScrolled]=useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [expandedRows, setExpandedRows] = useState({});
 
-  const toggleExpand = (idx) => {
-    setExpandedRow(expandedRow === idx ? null : idx);
+  const toggleExpand = (index) => {
+    setExpandedRows((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
   };
 
   // handle scroll for header shadow
@@ -31,8 +35,8 @@ const CustomerDetail = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -40,14 +44,14 @@ const CustomerDetail = () => {
       console.log("About to fetch /api/payment/customer/" + id);
       try {
         const token = localStorage.getItem("token");
-        console.log("token",token);
+        console.log("token", token);
         const res = await axios.get(
           `${apiBaseUrl}/api/payment/customer/${id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setCustomer(res.data.customer);
         setPayments(res.data.payments);
-        console.log("payment",res.data.payments);
+        console.log("payment", res.data.payments);
         console.log(".....", res.data.customer);
         //console.log("✅ Fetched payments:", res.data.payments.length, res.data.payments)
       } catch (err) {
@@ -108,7 +112,7 @@ const CustomerDetail = () => {
         </button>
         <h2>Customer Details</h2>
       </div>
-     
+
       <button
         onClick={handleExportCustomerHistory}
         className="export-all-btn"
@@ -204,7 +208,6 @@ const CustomerDetail = () => {
       </div>
 
       <div className="payment-history">
-        
         {payments.length > 0 ? (
           <>
             <div className="history-table">
@@ -215,30 +218,30 @@ const CustomerDetail = () => {
                 <div>Grand Total</div>
                 <div>Paid Amount</div>
                 <div>Remaining Amount</div>
-                
+
                 {/*<div>Remaining</div>*/}
                 <div>Status</div>
               </div>
               {payments.map((entry, idx) => (
                 <div className="table-row" key={idx}>
                   <div>{new Date(entry.paymentDate).toLocaleDateString()}</div>
-                 
+
                   <div className="amount">
-                    ₹{entry.subTotal.toLocaleString()}
-                  </div>
-                  <div className="amount">
-                    ₹{entry.totalGST.toLocaleString()}
-                  </div>
-                    <div className="amount">
-                    ₹{entry.grandTotal.toLocaleString()}
+                    ₹{Number(entry.subTotal || 0).toLocaleString()}
                   </div>
                   <div className="amount">
-                    ₹{entry.amountPaid.toLocaleString()}
+                    ₹{Number(entry.totalGST || 0).toLocaleString()}
                   </div>
-                   <div className="amount">
-                    ₹{entry.dueAmount.toLocaleString()}
+                  <div className="amount">
+                    ₹{Number(entry.grandTotal || 0).toLocaleString()}
                   </div>
-                
+                  <div className="amount">
+                    ₹{Number(entry.amountPaid || 0).toLocaleString()}
+                  </div>
+                  <div className="amount">
+                    ₹{Number(entry.dueAmount || 0).toLocaleString()}
+                  </div>
+
                   {/*//for items*/}
 
                   <div className="items-column">
@@ -247,7 +250,10 @@ const CustomerDetail = () => {
                         <div className="items-list">
                           {entry.items.slice(0, 2).map((item, i) => (
                             <span key={i} className="item-tag">
-                              {item.name} (qty:{item.quantity}) (price:{item.pricePerUnit}) (before gst total{item.taxableAmount}) (gst rate:{item.gstRate})  (grandtotal:{item.totalAmount})
+                              {item.name} (qty:{item.quantity}) (price:
+                              {item.pricePerUnit}) (before gst total
+                              {item.taxableAmount}) (gst rate:{item.gstRate})
+                              (grandtotal:{item.totalAmount})
                             </span>
                           ))}
                           {entry.items.length > 2 && (

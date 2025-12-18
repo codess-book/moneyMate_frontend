@@ -15,18 +15,20 @@ export default function SupplierDetailPage() {
   const [loading, setLoading] = useState(!passedSupplier); 
   // if supplier passed → no loading
 
-//   useEffect(() => {
-//     // If we already received supplier as state, no need for API call
-//     if (passedSupplier) return;
+  useEffect(() => {
+    // If we already received supplier as state, no need for API call
+    if (passedSupplier) return;
 
-//     // Otherwise fetch from API
-//     fetch(`${API_URL}/supplierByPhone/${phone}`)
-//       .then((res) => res.json())
-//       .then((data) => {
-//         setSupplier(data.supplier);
-//         setLoading(false);
-//       });
-//   }, [phone, passedSupplier]);
+    // Otherwise fetch from API
+    fetch(`${API_URL}/supplierByPhone/${phone}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setSupplier(data.supplier);
+        setLoading(false);
+      });
+  }, [phone, passedSupplier]);
+
+  console.log("supplier",supplier);
 
   if (loading) return <div className="loading">Loading...</div>;
   if (!supplier) return <h2>No Supplier Found</h2>;

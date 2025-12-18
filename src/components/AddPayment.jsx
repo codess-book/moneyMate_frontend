@@ -109,13 +109,14 @@ const AddPayment = () => {
       <form onSubmit={handleSubmit} className="payment-form">
         <label>New Payment Amount (₹)</label>
         <input
-          type="text"
+          type="number"
           value={amount}
           required
           onChange={(e) => setAmount(e.target.value)}
           placeholder="Enter payment amount"
           //min="1"
           max={customer.remainingAmount}
+           onWheel={(e) => e.target.blur()}
         />
 
         <label>Payment Date</label>

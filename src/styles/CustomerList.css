@@ -12,6 +12,14 @@
   font-size: 15px; /* Increased base font size */
 }
 
+.truncate-text {
+  max-width: 140px;       /* apne layout ke hisaab se adjust */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  vertical-align: middle;
+}
 /* Header Styles */
 .customer-list-header {
   display: flex;

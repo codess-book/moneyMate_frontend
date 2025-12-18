@@ -24,6 +24,7 @@ import NetworkToast from "./components/NetworkToast";
 import Inventory from "./components/Logistics";
 import SupplierHistoryPage from "./components/SupplierHistory";
 import SupplierDetailPage from "./components/SupplierDetailPage";
+import InvoicePage from "./pages/InvoicePage"
 
 function App() {
   const [count, setCount] = useState(0);
@@ -47,7 +48,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-
+        <Route path="/invoice/:invoiceNo" element={<InvoicePage />} />
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />}>
@@ -67,6 +68,7 @@ function App() {
             <Route path="logistics" element={<Inventory />}></Route>
             <Route path="supplier" element={<SupplierHistoryPage />} />
             <Route path="supplier/:phone" element={<SupplierDetailPage />} />
+            
           </Route>
         </Route>
 

@@ -1,4 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Edit, Trash2, Search } from "lucide-react";
 import {
   FaPlus,
   FaEdit,
@@ -9,18 +13,24 @@ import {
   FaTag,
   FaWarehouse,
 } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "../styles/logistic.css";
-
-const API_URL = "http://localhost:5000/api/inventory";
+const API = import.meta.env.VITE_API_URL;
 
 export default function Inventory() {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [loadingSupplier, setLoadingSupplier] = useState(false);
+  const [isadditem, setIsAddItem] = useState(false);
 
-  const[isadditem,setIsAddItem]=useState(false);
-  
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const [filters, setFilters] = useState({
+    search: "",
+    category: "",
+    unit: "",
+    status: "",
+    stock: "", // low | high
+  });
 
   const fetchSupplierByPhone = async (phone) => {
     // Only run when EDITING
@@ -32,11 +42,13 @@ export default function Inventory() {
     setLoadingSupplier(true);
 
     try {
-      const res = await fetch(`${API_URL}/item/${editingId}/supplier/${phone}`);
+      const res = await fetch(
+        `${API}/api/inventory/item/${editingId}/supplier/${phone}`
+      );
 
       if (res.ok) {
         const data = await res.json();
-        console.log(data, "data");
+        // console.log(data, "data");
 
         const supplier = data.supplier;
 
@@ -89,25 +101,48 @@ export default function Inventory() {
   const [editingId, setEditingId] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  // 🔥 Fetch items
   const fetchItems = async () => {
+    setLoading(true);
     try {
-      const res = await fetch(API_URL + "/allItems");
-      const data = await res.json();
-      setItems(data.items);
+      const { data } = await axios.get(`${API}/api/inventory/allItems`, {
+        params: {
+          page,
+          limit: 10,
+          search: filters.search,
+          category: filters.category,
+          unit: filters.unit,
+          status: filters.status,
+        },
+      });
+
+      console.log("data", data);
+      let fetchedItems = data.items;
+
+      // Low / High stock filter (client side)
+      if (filters.stock) {
+        fetchedItems = fetchedItems.filter((item) =>
+          filters.stock === "low"
+            ? item.currentStock <= item.lowStockAlert
+            : item.currentStock > item.lowStockAlert
+        );
+      }
+
+      setItems(fetchedItems);
+      setTotalPages(data.metadata.totalPages);
     } catch (err) {
-      toast.error("Failed to load inventory!");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  
-
   useEffect(() => {
     fetchItems();
-  }, []);
+  }, [page, filters]);
 
-  // Handler to open the modal for a new item, resetting the form
   const handleAddItemClick = () => {
-   setIsAddItem(true)
+    setIsAddItem(true);
     setForm({
       item_name: "",
       quantity: "",
@@ -123,7 +158,6 @@ export default function Inventory() {
     setShowModal(true);
   };
 
-  // Handler to close the modal and reset form/editing state
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingId(null);
@@ -144,7 +178,7 @@ export default function Inventory() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // form.supplier_quantity=form.quantity
-    console.log("here",form.supplier_quantity)
+    console.log("here", form.supplier_quantity);
     const {
       item_name,
       quantity,
@@ -171,11 +205,8 @@ export default function Inventory() {
     // }
 
     const hasSupplierInfo =
-      supplier_name ||
-      phone ||
-      address ||
-      bought_price !== "" ;
-      // supplier_quantity !== "";
+      supplier_name || phone || address || bought_price !== "";
+    // supplier_quantity !== "";
 
     if (hasSupplierInfo) {
       // if (!supplier_quantity || Number(supplier_quantity) <= 0) {
@@ -185,7 +216,9 @@ export default function Inventory() {
     }
 
     const method = editingId ? "PUT" : "POST";
-    const url = editingId ? `${API_URL}/${editingId}` : API_URL;
+    const url = editingId
+      ? `${API}/api/inventory/${editingId}`
+      : `${API}/api/inventory`;
 
     const initialQuantity = method === "POST" ? Number(quantity) : 0;
     console.log(initialQuantity, "initial");
@@ -224,7 +257,7 @@ export default function Inventory() {
       if (res.ok) {
         handleCloseModal();
         fetchItems();
-        setIsAddItem(false)
+        setIsAddItem(false);
         toast.success(
           editingId ? "✅ Item Updated Successfully!" : "🎉 Item Added!"
         );
@@ -232,11 +265,12 @@ export default function Inventory() {
         toast.error("❌ Something went wrong!");
       }
     } catch {
-      setIsAddItem(false)
+      setIsAddItem(false);
       toast.error("❌ Something went wrong!");
     }
   };
 
+  // ❌ Delete item
   const handleDelete = async (id) => {
     toast.info(
       <div className="flex flex-col items-start">
@@ -244,7 +278,7 @@ export default function Inventory() {
         <div className="mt-2 flex gap-3">
           <button
             onClick={async () => {
-              await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+              await fetch(`${API}/api/inventory/${id}`, { method: "DELETE" });
               fetchItems();
               toast.dismiss();
               toast.success("🗑️ Item Deleted");
@@ -253,6 +287,7 @@ export default function Inventory() {
           >
             Yes
           </button>
+
           <button
             onClick={() => toast.dismiss()}
             className="bg-gray-700 text-white px-3 py-1 rounded-md"
@@ -265,7 +300,9 @@ export default function Inventory() {
     );
   };
 
+  // edit
   const handleEdit = (item) => {
+    console.log("hitt");
     setForm({
       item_name: item.name || item.item?.name || "",
       quantity: item.currentStock || "",
@@ -281,191 +318,147 @@ export default function Inventory() {
     setEditingId(item._id);
     setShowModal(true);
   };
-
+  
   return (
-    // Main Container
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center px-4 md:px-8 py-12  text-gray-900 relative">
-      <ToastContainer position="top-right" autoClose={2000} theme="light" />
+    <div className="p-4 md:p-8 space-y-6">
+      <h1 className="text-2xl font-bold">Items</h1>
 
-      {/* Animation Style */}
-      <style>{`
-        @keyframes fadeInScale {
-          from { opacity: 0; transform: scale(0.95); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        .animate-fadeInScale {
-          animation: fadeInScale 0.3s ease-out forwards;
-        }
-      `}</style>
-
-      <div className="w-full max-w-7xl">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 pb-4 border-b border-gray-200">
-          {/* Header styling refined */}
-          <h1 className="text-3xl sm:text-4xl font-bold text-green flex items-center gap-4 mb-4 sm:mb-0">
-            <span className="text-green text-2xl">
-              <FaClipboardList />
-            </span>
-            Farm Inventory Management
-          </h1>
-          {/* Add New Item Button uses a modern blue accent */}
-          <button
-            onClick={handleAddItemClick}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all text-lg flex items-center gap-2"
-          >
-            <FaPlus /> Add New Item
-          </button>
+      {/* 🔍 Filters */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-2 top-2.5 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search items..."
+            className="pl-8 border rounded-md p-2 w-full"
+            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+          />
         </div>
 
-        {/* Inventory Card Grid View */}
-        <div className="stock-overview">
-          <div className="section-header">
-            <FaWarehouse className="section-icon" />
-            <h2>Current Stock Overview</h2>
-          </div>
+        {/* Category */}
+        <select
+          className="border rounded-md p-2"
+          onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+        >
+          <option value="">All Categories</option>
+          <option value="Seeds">Seeds</option>
+          <option value="Fertilizers">Fertilizers</option>
+          <option value="Pesticides">Pesticides</option>
+          <option value="Others">Others</option>
+        </select>
 
-          {items.length > 0 ? (
-            <div className="stock-grid">
-              {items.map((item) => {
-                const isLowStock = item.quantity <= item.stockAlert;
-                const isOutOfStock = item.quantity === 0;
-                const stockPercentage = Math.min(
-                  (item.quantity / (item.stockAlert * 3)) * 100,
-                  100
-                );
+        {/* Unit */}
+        <select
+          className="border rounded-md p-2"
+          onChange={(e) => setFilters({ ...filters, unit: e.target.value })}
+        >
+          <option value="">All Units</option>
+          <option value="kg">KG</option>
+          <option value="packet">Packet</option>
+        </select>
 
-                return (
-                  <div
-                    key={item._id}
-                    className={`stock-card ${isLowStock ? "low-stock" : ""} ${
-                      isOutOfStock ? "out-of-stock" : ""
-                    }`}
-                  >
-                    {/* Header */}
-                    <div className="card-header">
-                      <div className="item-info">
-                        <h3 className="item-name">{item.name}</h3>
-                        <p className="text-sm">{item.category}</p>
-                        <div className="stock-status">
-                          <span
-                            className={`status-badge ${
-                              isOutOfStock
-                                ? "out-of-stock"
-                                : isLowStock
-                                ? "low-stock"
-                                : "in-stock"
-                            }`}
-                          >
-                            {isOutOfStock
-                              ? "Out of Stock"
-                              : isLowStock
-                              ? "Low Stock"
-                              : "In Stock"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+        {/* Stock */}
+        <select
+          className="border rounded-md p-2"
+          onChange={(e) => setFilters({ ...filters, stock: e.target.value })}
+        >
+          <option value="">All Stock</option>
+          <option value="low">Low Stock</option>
+          <option value="high">High Stock</option>
+        </select>
+      </div>
+      <div>
+        <button
+          onClick={handleAddItemClick}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all text-lg flex items-center gap-2"
+        >
+          <FaPlus /> Add New Item
+        </button>
+      </div>
 
-                    {/* Content */}
-                    <div className="card-content">
-                      {/* Stock Level */}
-                      <div className="stock-level">
-                        <div className="stock-info">
-                          <span className="stock-label">Stock Level</span>
-                          <span className="stock-quantity">
-                            {item.currentStock} units
-                          </span>
-                        </div>
+      {/* 📦 Items List */}
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {items.map((item) => (
+            <div
+              key={item._id}
+              className="bg-white border rounded-2xl p-4 shadow-sm space-y-2"
+            >
+              {/* Title + Badge */}
+              <div className="flex justify-between items-center">
+                <h2 className="font-semibold text-lg">{item.name}</h2>
 
-                        {/* Stock progress bar */}
-                        <div className="progress-bar">
-                          <div
-                            className={`progress-fill ${
-                              isOutOfStock
-                                ? "out-of-stock"
-                                : isLowStock
-                                ? "low-stock"
-                                : "in-stock"
-                            }`}
-                            style={{ width: `${stockPercentage}%` }}
-                          ></div>
-                        </div>
-                      </div>
+                <span
+                  className={`text-xs px-2 py-1 rounded-full ${
+                    item.currentStock <= item.lowStockAlert
+                      ? "bg-red-100 text-red-600"
+                      : "bg-green-100 text-green-600"
+                  }`}
+                >
+                  {item.currentStock <= item.lowStockAlert
+                    ? "Low Stock"
+                    : "High Stock"}
+                </span>
+              </div>
 
-                      {/* Details */}
-                      <div className="item-details">
-                        <div className="detail-item">
-                          <div className="detail-label">
-                            <FaWarehouse className="detail-icon" />
-                            <span>Current Stock</span>
-                          </div>
-                          <span className="detail-value">
-                            {item.currentStock}
-                          </span>
-                        </div>
+              <p className="text-sm text-gray-500">
+                {item.category} • {item.unit}
+              </p>
 
-                        <div className="detail-item">
-                          <div className="detail-label">
-                            <FaTag className="detail-icon" />
-                            <span>Price</span>
-                          </div>
-                          <span className="detail-value">
-                            ₹{Number(item.price).toFixed(2)}
-                          </span>
-                        </div>
+              <p className="text-sm font-medium">
+                Price per unit {item.price}₹
+              </p>
+              <p className="text-sm">Current stock: {item.currentStock}</p>
+              <p className="text-sm">low stock alert: {item.lowStockAlert}</p>
+              <p className="text-sm">status: {item.status}</p>
+              {/* Actions */}
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  className="p-2 border rounded-md hover:bg-gray-100"
+                  onClick={() => handleEdit(item)}
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
 
-                        <div className="detail-item">
-                          <div className="detail-label">
-                            <FaBoxOpen className="detail-icon" />
-                            <span>Alert Level</span>
-                          </div>
-                          <span className="detail-value">
-                            {item.lowStockAlert}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Buttons */}
-                      <div className="card-actions">
-                        <button
-                          className="btn-edit"
-                          onClick={() => handleEdit(item)}
-                        >
-                          <FaEdit className="btn-icon" />
-                          Edit
-                        </button>
-
-                        <button
-                          className="btn-delete"
-                          onClick={() => handleDelete(item._id)}
-                        >
-                          <FaTrash className="btn-icon" />
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="empty-state">
-              <div className="empty-content">
-                <div className="empty-icon">
-                  <FaWarehouse />
-                </div>
-                <h3>No farm products in stock</h3>
-                <p>Get started by adding your first inventory item</p>
-                <button className="btn-primary" onClick={handleAddItemClick}>
-                  <FaPlus className="btn-icon" />
-                  Add New Item
+                <button
+                  className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                  onClick={() => handleDelete(item._id)}
+                >
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             </div>
-          )}
+          ))}
         </div>
+      )}
+
+      {/* ⏭ Pagination */}
+      <div className="flex justify-center items-center gap-4">
+        <button
+          className="px-3 py-1 border rounded-md disabled:opacity-50"
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+        >
+          Prev
+        </button>
+
+        <span className="text-sm">
+          Page {page} / {totalPages}
+        </span>
+
+        <button
+          className="px-3 py-1 border rounded-md disabled:opacity-50"
+          disabled={page === totalPages}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </button>
       </div>
 
-      {/* Add / Edit Item Modal (Kept the highly polished form from the last step) */}
+      {/* edit form editing items */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-container">
@@ -539,7 +532,8 @@ export default function Inventory() {
                     <input
                       type="number"
                       min="0"
-                      step="0.01"
+                      // step="0.01"
+
                       className="form-input"
                       placeholder="0.00"
                       value={form.price}
@@ -551,6 +545,7 @@ export default function Inventory() {
                         })
                       }
                       required
+                      onWheel={(e) => e.target.blur()}
                     />
                   </div>
 
@@ -572,6 +567,7 @@ export default function Inventory() {
                       }
                       required
                       disabled={!!editingId}
+                      onWheel={(e) => e.target.blur()}
                     />
                     {!!editingId && (
                       <p className="form-note">
@@ -598,6 +594,7 @@ export default function Inventory() {
                         })
                       }
                       required
+                      onWheel={(e) => e.target.blur()}
                     />
                   </div>
                 </div>
@@ -673,7 +670,7 @@ export default function Inventory() {
                     <input
                       type="number"
                       min="0"
-                      step="0.01"
+                      // step="0.01"
                       className="form-input"
                       placeholder="0.00"
                       value={form.bought_price}
@@ -685,33 +682,35 @@ export default function Inventory() {
                             e.target.value === "" ? "" : Number(e.target.value),
                         })
                       }
+                      onWheel={(e) => e.target.blur()}
                     />
                   </div>
 
                   {/* Quantity to Add */}
-                 
 
-               {!isadditem &&
-                  <div className="form-group">
-                    <label className="form-label">Quantity to Add Now</label>
-                    <input
-                      type="number"
-                      min="0"
-                      className="form-input"
-                      placeholder="0"
-                      value={form.supplier_quantity}
-                      disabled={loadingSupplier}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          supplier_quantity:
-                            e.target.value === "" ? "" : Number(e.target.value),
-                        })
-                      }
-                    />
-                  </div>
-
-                    }
+                  {!isadditem && (
+                    <div className="form-group">
+                      <label className="form-label">Quantity to Add Now</label>
+                      <input
+                        type="number"
+                        min="0"
+                        className="form-input"
+                        placeholder="0"
+                        value={form.supplier_quantity}
+                        disabled={loadingSupplier}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            supplier_quantity:
+                              e.target.value === ""
+                                ? ""
+                                : Number(e.target.value),
+                          })
+                        }
+                         onWheel={(e) => e.target.blur()}
+                      />
+                    </div>
+                  )}
                   {/* Address */}
                   <div className="form-group full-width">
                     <label className="form-label">Supplier Address</label>
