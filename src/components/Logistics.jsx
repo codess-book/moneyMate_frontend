@@ -11,8 +11,11 @@ import {
   FaClipboardList,
   FaSeedling,
   FaTag,
+  FaCheck,
   FaWarehouse,
 } from "react-icons/fa";
+import "../styles/logistic.css";
+
 const API = import.meta.env.VITE_API_URL;
 
 export default function Inventory() {
@@ -178,7 +181,7 @@ export default function Inventory() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // form.supplier_quantity=form.quantity
-    console.log("here", form.supplier_quantity);
+    // console.log("here", form.supplier_quantity);
     const {
       item_name,
       quantity,
@@ -208,12 +211,12 @@ export default function Inventory() {
       supplier_name || phone || address || bought_price !== "";
     // supplier_quantity !== "";
 
-    if (hasSupplierInfo) {
-      // if (!supplier_quantity || Number(supplier_quantity) <= 0) {
-      //   toast.warn("⚠️ Please enter valid supplier quantity to add");
-      //   return;
-      // }
-    }
+    // if (hasSupplierInfo) {
+    //   // if (!supplier_quantity || Number(supplier_quantity) <= 0) {
+    //   //   toast.warn("⚠️ Please enter valid supplier quantity to add");
+    //   //   return;
+    //   // }
+    // }
 
     const method = editingId ? "PUT" : "POST";
     const url = editingId
@@ -221,7 +224,7 @@ export default function Inventory() {
       : `${API}/api/inventory`;
 
     const initialQuantity = method === "POST" ? Number(quantity) : 0;
-    console.log(initialQuantity, "initial");
+    // console.log(initialQuantity, "initial");
     const payload = {
       name: item_name,
       quantity: initialQuantity,
@@ -264,10 +267,18 @@ export default function Inventory() {
       } else {
         toast.error("❌ Something went wrong!");
       }
-    } catch {
+    } catch (err) {
+      console.log("ADD ITEM ERROR 👉", err);
       setIsAddItem(false);
-      toast.error("❌ Something went wrong!");
+      const errorMessage =
+        err.response?.data?.message || err.message || "Something went wrong";
+
+      toast.error(errorMessage);
     }
+    // } catch {
+    //   setIsAddItem(false);
+    //   toast.error("❌ Something went wrong!");
+    // }
   };
 
   // ❌ Delete item
@@ -302,7 +313,7 @@ export default function Inventory() {
 
   // edit
   const handleEdit = (item) => {
-    console.log("hitt");
+    // console.log("hitt");
     setForm({
       item_name: item.name || item.item?.name || "",
       quantity: item.currentStock || "",
@@ -318,162 +329,233 @@ export default function Inventory() {
     setEditingId(item._id);
     setShowModal(true);
   };
-  
+
   return (
-    <div className="p-4 md:p-8 space-y-6">
-      <h1 className="text-2xl font-bold">Items</h1>
-
-      {/* 🔍 Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-2 top-2.5 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search items..."
-            className="pl-8 border rounded-md p-2 w-full"
-            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-          />
+    <div className="inventory-container">
+      {/* Header */}
+      <div className="inventory-header">
+        <div className="header-content">
+          <div className="header-left">
+            <h1>📦 Inventory Management</h1>
+            <p>Manage your farm products and stock levels efficiently</p>
+          </div>
+          <button className="add-item-btn" onClick={handleAddItemClick}>
+            <FaPlus /> Add New Item
+          </button>
         </div>
-
-        {/* Category */}
-        <select
-          className="border rounded-md p-2"
-          onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-        >
-          <option value="">All Categories</option>
-          <option value="Seeds">Seeds</option>
-          <option value="Fertilizers">Fertilizers</option>
-          <option value="Pesticides">Pesticides</option>
-          <option value="Others">Others</option>
-        </select>
-
-        {/* Unit */}
-        <select
-          className="border rounded-md p-2"
-          onChange={(e) => setFilters({ ...filters, unit: e.target.value })}
-        >
-          <option value="">All Units</option>
-          <option value="kg">KG</option>
-          <option value="packet">Packet</option>
-        </select>
-
-        {/* Stock */}
-        <select
-          className="border rounded-md p-2"
-          onChange={(e) => setFilters({ ...filters, stock: e.target.value })}
-        >
-          <option value="">All Stock</option>
-          <option value="low">Low Stock</option>
-          <option value="high">High Stock</option>
-        </select>
-      </div>
-      <div>
-        <button
-          onClick={handleAddItemClick}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all text-lg flex items-center gap-2"
-        >
-          <FaPlus /> Add New Item
-        </button>
       </div>
 
-      {/* 📦 Items List */}
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {items.map((item) => (
-            <div
-              key={item._id}
-              className="bg-white border rounded-2xl p-4 shadow-sm space-y-2"
+      {/* Filters */}
+      <div className="filters-section">
+        <div className="filters-grid">
+          <div className="filter-group">
+            <label htmlFor="search">🔍 Search Items</label>
+            <input
+              id="search"
+              type="text"
+              placeholder="Search by name..."
+              onChange={(e) =>
+                setFilters({ ...filters, search: e.target.value })
+              }
+            />
+          </div>
+
+          <div className="filter-group">
+            <label htmlFor="category">📂 Category</label>
+            <select
+              id="category"
+              onChange={(e) =>
+                setFilters({ ...filters, category: e.target.value })
+              }
             >
-              {/* Title + Badge */}
-              <div className="flex justify-between items-center">
-                <h2 className="font-semibold text-lg">{item.name}</h2>
+              <option value="">All Categories</option>
+              <option value="Seeds">🌱 Seeds</option>
+              <option value="Fertilizers">🧪 Fertilizers</option>
+              <option value="Pesticides">⚠️ Pesticides</option>
+              <option value="Others">📦 Others</option>
+            </select>
+          </div>
 
-                <span
-                  className={`text-xs px-2 py-1 rounded-full ${
-                    item.currentStock <= item.lowStockAlert
-                      ? "bg-red-100 text-red-600"
-                      : "bg-green-100 text-green-600"
-                  }`}
-                >
-                  {item.currentStock <= item.lowStockAlert
-                    ? "Low Stock"
-                    : "High Stock"}
-                </span>
-              </div>
+          <div className="filter-group">
+            <label htmlFor="unit">⚖️ Unit</label>
+            <select
+              id="unit"
+              onChange={(e) => setFilters({ ...filters, unit: e.target.value })}
+            >
+              <option value="">All Units</option>
+              <option value="kg">KG</option>
+              <option value="packet">Packet</option>
+              <option value="liter">Liter</option>
+              <option value="piece">Piece</option>
+            </select>
+          </div>
 
-              <p className="text-sm text-gray-500">
-                {item.category} • {item.unit}
-              </p>
+          <div className="filter-group">
+            <label htmlFor="stock">📊 Stock Status</label>
+            <select
+              id="stock"
+              onChange={(e) =>
+                setFilters({ ...filters, stock: e.target.value })
+              }
+            >
+              <option value="">All Stock</option>
+              <option value="low">⚠️ Low Stock</option>
+              <option value="high">✅ High Stock</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
-              <p className="text-sm font-medium">
-                Price per unit {item.price}₹
-              </p>
-              <p className="text-sm">Current stock: {item.currentStock}</p>
-              <p className="text-sm">low stock alert: {item.lowStockAlert}</p>
-              <p className="text-sm">status: {item.status}</p>
-              {/* Actions */}
-              <div className="flex justify-end gap-2 pt-2">
-                <button
-                  className="p-2 border rounded-md hover:bg-gray-100"
-                  onClick={() => handleEdit(item)}
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
+      {/* Items Table */}
+      <div className="table-section">
+        {loading ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+          </div>
+        ) : items.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">📭</div>
+            <h3>No items found</h3>
+            <p>Try adjusting your filters or add a new item</p>
+            <button
+              className="add-item-btn"
+              onClick={handleAddItemClick}
+              style={{ marginTop: "1rem" }}
+            >
+              <FaPlus /> Add Your First Item
+            </button>
+          </div>
+        ) : (
+          <div className="table-container">
+            <table className="inventory-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Unit</th>
+                  <th>Price (₹)</th>
+                  <th>Current Stock</th>
+                  <th>Low Stock Alert</th>
+                  <th>Status</th>
+                  <th>Stock Level</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
 
-                <button
-                  className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                  onClick={() => handleDelete(item._id)}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          ))}
+              <tbody>
+                {items.map((item) => (
+                  <tr key={item._id}>
+                    <td data-label="Name">
+                      <strong>{item.name}</strong>
+                    </td>
+                    <td data-label="Category">
+                      <span className="category-badge">{item.category}</span>
+                    </td>
+                    <td data-label="Unit">{item.unit}</td>
+                    <td data-label="Price">₹{item.price.toLocaleString()}</td>
+                    <td data-label="Current Stock">
+                      <span className="stock-count">{item.currentStock}</span>
+                    </td>
+                    <td data-label="Low Stock Alert">{item.lowStockAlert}</td>
+                    <td data-label="Status">
+                      <span
+                        className={`status-badge status-${item.status.toLowerCase()}`}
+                      >
+                        {item.status}
+                      </span>
+                    </td>
+                    <td data-label="Stock Level">
+                      <span
+                        className={
+                          item.currentStock <= item.lowStockAlert
+                            ? "stock-low"
+                            : "stock-high"
+                        }
+                      >
+                        {item.currentStock <= item.lowStockAlert
+                          ? "⚠️ Low Stock"
+                          : "✅ High Stock"}
+                      </span>
+                    </td>
+                    <td data-label="Actions">
+                      <div className="action-buttons">
+                        <button
+                          className="action-btn edit-btn"
+                          onClick={() => handleEdit(item)}
+                          aria-label="Edit item"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button
+                          className="action-btn delete-btn"
+                          onClick={() => handleDelete(item._id)}
+                          aria-label="Delete item"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Pagination */}
+      {items.length > 0 && (
+        <div className="pagination">
+          <button
+            className="pagination-btn"
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+          >
+            ← Previous
+          </button>
+
+          <span className="page-info">
+            Page {page} of {totalPages}
+            <span style={{ marginLeft: "0.5rem", color: "#94a3b8" }}>
+              ({items.length} items)
+            </span>
+          </span>
+
+          <button
+            className="pagination-btn"
+            disabled={page === totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            Next →
+          </button>
         </div>
       )}
 
-      {/* ⏭ Pagination */}
-      <div className="flex justify-center items-center gap-4">
-        <button
-          className="px-3 py-1 border rounded-md disabled:opacity-50"
-          disabled={page === 1}
-          onClick={() => setPage(page - 1)}
-        >
-          Prev
-        </button>
-
-        <span className="text-sm">
-          Page {page} / {totalPages}
-        </span>
-
-        <button
-          className="px-3 py-1 border rounded-md disabled:opacity-50"
-          disabled={page === totalPages}
-          onClick={() => setPage(page + 1)}
-        >
-          Next
-        </button>
-      </div>
-
-      {/* edit form editing items */}
+      {/* Modal */}
       {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-container">
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             {/* Modal Header */}
             <div className="modal-header">
-              <div className="modal-title">
-                <FaSeedling className="modal-icon" />
-                <h2>
-                  {editingId
-                    ? "Update Product & Stock"
-                    : "New Farm Product Entry"}
-                </h2>
+              <div className="modal-header-left">
+                <div className="modal-icon-container">
+                  <FaSeedling />
+                </div>
+                <div className="modal-title-section">
+                  <h2>
+                    {editingId
+                      ? "Update Product & Stock"
+                      : "New Farm Product Entry"}
+                  </h2>
+                  <p>
+                    {editingId
+                      ? "Edit existing inventory item"
+                      : "Add new item to your inventory"}
+                  </p>
+                </div>
               </div>
               <button
-                className="modal-close-btn"
+                className="close-button"
                 onClick={handleCloseModal}
                 aria-label="Close modal"
               >
@@ -483,8 +565,8 @@ export default function Inventory() {
 
             <form onSubmit={handleSubmit} className="modal-form">
               {/* Product Inventory & Pricing */}
-              <fieldset className="form-section">
-                <legend className="section-legend">
+              <fieldset className="modal-fieldset">
+                <legend className="modal-legend">
                   <FaBoxOpen className="section-icon" />
                   Product Inventory & Pricing
                 </legend>
@@ -492,7 +574,7 @@ export default function Inventory() {
                 <div className="form-grid">
                   {/* Item Name */}
                   <div className="form-group">
-                    <label className="form-label">Product Name</label>
+                    <label className="form-label required">Product Name</label>
                     <input
                       type="text"
                       className="form-input"
@@ -503,14 +585,15 @@ export default function Inventory() {
                       }
                       required
                       disabled={!!editingId}
+                      autoFocus
                     />
                   </div>
 
                   {/* Category */}
                   <div className="form-group">
-                    <label className="form-label">Category</label>
+                    <label className="form-label required">Category</label>
                     <select
-                      className="form-input"
+                      className="form-select"
                       value={form.category}
                       onChange={(e) =>
                         setForm({ ...form, category: e.target.value })
@@ -528,14 +611,15 @@ export default function Inventory() {
 
                   {/* Selling Price */}
                   <div className="form-group">
-                    <label className="form-label">Selling Price (₹)</label>
+                    <label className="form-label required">
+                      Selling Price (₹)
+                    </label>
                     <input
                       type="number"
                       min="0"
-                      // step="0.01"
-
+                      step="1"
                       className="form-input"
-                      placeholder="0.00"
+                      placeholder="0"
                       value={form.price}
                       onChange={(e) =>
                         setForm({
@@ -551,7 +635,9 @@ export default function Inventory() {
 
                   {/* Current Quantity */}
                   <div className="form-group">
-                    <label className="form-label">Current Stock Quantity</label>
+                    <label className="form-label required">
+                      Current Stock Quantity
+                    </label>
                     <input
                       type="number"
                       min="0"
@@ -579,7 +665,9 @@ export default function Inventory() {
 
                   {/* Low Stock Alert */}
                   <div className="form-group">
-                    <label className="form-label">Low Stock Alert Level</label>
+                    <label className="form-label required">
+                      Low Stock Alert Level
+                    </label>
                     <input
                       type="number"
                       min="0"
@@ -601,34 +689,29 @@ export default function Inventory() {
               </fieldset>
 
               {/* Replenish & Supplier */}
-              <fieldset className="form-section">
-                <legend className="section-legend">
+              <fieldset className="modal-fieldset">
+                <legend className="modal-legend">
                   <FaPlus className="section-icon" />
                   Replenish Stock & Supplier Details
                 </legend>
+
+                {loadingSupplier && (
+                  <div className="loading-overlay">
+                    <div className="spinner"></div>
+                  </div>
+                )}
 
                 <div className="form-grid">
                   {/* Phone */}
                   <div className="form-group">
                     <label className="form-label">Phone Number</label>
-                    {/* <input
-                      type="tel"
-                      className="form-input"
-                      placeholder="Phone"
-                      value={form.phone}
-                      onChange={(e) =>
-                        setForm({ ...form, phone: e.target.value })
-                      }
-                    /> */}
-
                     <input
                       type="tel"
                       className="form-input"
-                      placeholder="Phone"
+                      placeholder="Enter 10-digit phone number"
                       value={form.phone}
                       onChange={(e) => {
                         const phone = e.target.value;
-
                         setForm({ ...form, phone });
 
                         if (phone.length === 10) {
@@ -636,7 +719,6 @@ export default function Inventory() {
                         }
 
                         if (phone.length < 10) {
-                          // clear auto-filled fields
                           setForm((prev) => ({
                             ...prev,
                             supplier_name: "",
@@ -646,6 +728,8 @@ export default function Inventory() {
                           }));
                         }
                       }}
+                      maxLength="10"
+                      pattern="[0-9]{10}"
                     />
                   </div>
 
@@ -670,9 +754,9 @@ export default function Inventory() {
                     <input
                       type="number"
                       min="0"
-                      // step="0.01"
+                      step="1"
                       className="form-input"
-                      placeholder="0.00"
+                      placeholder="0"
                       value={form.bought_price}
                       disabled={loadingSupplier}
                       onChange={(e) =>
@@ -687,7 +771,6 @@ export default function Inventory() {
                   </div>
 
                   {/* Quantity to Add */}
-
                   {!isadditem && (
                     <div className="form-group">
                       <label className="form-label">Quantity to Add Now</label>
@@ -707,16 +790,17 @@ export default function Inventory() {
                                 : Number(e.target.value),
                           })
                         }
-                         onWheel={(e) => e.target.blur()}
+                        onWheel={(e) => e.target.blur()}
                       />
                     </div>
                   )}
+
                   {/* Address */}
                   <div className="form-group full-width">
                     <label className="form-label">Supplier Address</label>
                     <textarea
                       className="form-textarea"
-                      placeholder="Full Address"
+                      placeholder="Enter full address"
                       value={form.address}
                       disabled={loadingSupplier}
                       onChange={(e) =>
@@ -730,10 +814,27 @@ export default function Inventory() {
 
               {/* Submit Button */}
               <div className="form-actions">
-                <button type="submit" className="submit-btn">
-                  {editingId
-                    ? "Update Item & Stock"
-                    : "Confirm & Add Inventory"}
+                <button
+                  type="submit"
+                  className="submit-button"
+                  disabled={loadingSupplier}
+                >
+                  {loadingSupplier ? (
+                    <>
+                      <div
+                        className="spinner"
+                        style={{ width: "1.25rem", height: "1.25rem" }}
+                      ></div>
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      <FaCheck className="button-icon" />
+                      {editingId
+                        ? "Update Item & Stock"
+                        : "Confirm & Add Inventory"}
+                    </>
+                  )}
                 </button>
               </div>
             </form>

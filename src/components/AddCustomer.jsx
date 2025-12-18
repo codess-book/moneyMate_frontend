@@ -145,7 +145,7 @@ const AddCustomer = () => {
   const handleProductChange = (index, selectedOption) => {
     // const productName = selectedOption?.value || "";
     const product = selectedOption?.product;
-    console.log("product", product);
+    // console.log("product", product);
 
     // Find product in inventory
     // const product = allProducts.find((p) => p.name === productName);
@@ -429,8 +429,18 @@ const AddCustomer = () => {
         // }, 500);
       }
     } catch (err) {
-      const errorMessage =
-        err.response?.data?.message || err.message || "Failed to add customer";
+      const data = err?.response?.data;
+
+      let errorMessage = "Something went wrong. Please try again.";
+
+      if (data?.code === "LOW_STOCK") {
+        errorMessage = `⚠️ ${data.message}`;
+      } else if (data?.message) {
+        errorMessage = data.message;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -886,14 +896,16 @@ const AddCustomer = () => {
                         </span>
                       </div>
                       <div className="relative">
-                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                        
-                        </div>
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></div>
                         <input
                           type="number"
                           value={item.quantity}
                           onChange={(e) =>
-                            handleItemChange(index, "quantity", e.target.value)
+                            handleItemChange(
+                              index,
+                              "quantity",
+                              Number(e.target.value)
+                            )
                           }
                           placeholder="Enter quantity"
                           className="w-full pl-10 pr-4 py-3 bg-white  border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600 transition-all duration-200 placeholder:text-gray-400 dark:placeholder:text-black-500 text-black-900 dark:text-black-100"
@@ -914,10 +926,7 @@ const AddCustomer = () => {
                         </span>
                       </div>
                       <div className="relative">
-                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                         
-                          
-                        </div>
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></div>
                         <input
                           type="text"
                           value={item.unit}
@@ -951,7 +960,7 @@ const AddCustomer = () => {
                             handleItemChange(
                               index,
                               "pricePerUnit",
-                              e.target.value
+                              Number(e.target.value)
                             )
                           }
                           placeholder="Enter price per unit"
@@ -973,9 +982,7 @@ const AddCustomer = () => {
                         </span>
                       </div>
                       <div className="relative">
-                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                         
-                        </div>
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></div>
                         <select
                           value={item.gstRate}
                           onChange={(e) =>
