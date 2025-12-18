@@ -119,6 +119,8 @@ export default function Inventory() {
 
       let fetchedItems = data.items;
 
+      
+
       // Low / High stock filter (client side)
       if (filters.stock) {
         fetchedItems = fetchedItems.filter((item) =>
@@ -262,7 +264,7 @@ export default function Inventory() {
         toast.error("❌ Something went wrong!");
       }
     } catch (err) {
-      console.log("ADD ITEM ERROR 👉", err);
+      // console.log("ADD ITEM ERROR 👉", err);
       setIsAddItem(false);
       const errorMessage =
         err.response?.data?.message || err.message || "Something went wrong";
@@ -451,11 +453,12 @@ export default function Inventory() {
                     </td>
                     <td data-label="Low Stock Alert">{item.lowStockAlert}</td>
                     <td data-label="Status">
-                      <span
+                      {/* <span
                         className={`status-badge status-${item.status.toLowerCase()}`}
                       >
-                        {item.status}
-                      </span>
+                       
+                      </span> */}
+                       {item.status}
                     </td>
                     <td data-label="Stock Level">
                       <span

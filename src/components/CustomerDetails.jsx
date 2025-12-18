@@ -196,17 +196,20 @@ const CustomerDetail = () => {
         </div>
       </div>
 
+      {/* tabel */}
+
       <div className="section-header">
         <h3>Payment History</h3>
         <p>{payments.length} transactions</p>
       </div>
-
+{/* payment history tabel */}
       <div className="payment-history">
         {payments.length > 0 ? (
           <>
             <div className="history-table">
               <div className="table-header">
                 <div>Date</div>
+                <div>Items</div>
                 <div>SubTotal</div>
                 <div>Totat GST</div>
                 <div>Grand Total</div>
@@ -220,25 +223,8 @@ const CustomerDetail = () => {
                 <div className="table-row" key={idx}>
                   <div>{new Date(entry.paymentDate).toLocaleDateString()}</div>
 
-                  <div className="amount">
-                    ₹{Number(entry.subTotal || 0).toLocaleString()}
-                  </div>
-                  <div className="amount">
-                    ₹{Number(entry.totalGST || 0).toLocaleString()}
-                  </div>
-                  <div className="amount">
-                    ₹{Number(entry.grandTotal || 0).toLocaleString()}
-                  </div>
-                  <div className="amount">
-                    ₹{Number(entry.amountPaid || 0).toLocaleString()}
-                  </div>
-                  <div className="amount">
-                    ₹{Number(entry.dueAmount || 0).toLocaleString()}
-                  </div>
-
-                  {/*//for items*/}
-
-                  <div className="items-column">
+                 {/* for showing all items */}
+                     <div className="items-column">
                     {entry.items?.length > 0 ? (
                       <>
                         <div className="items-list">
@@ -277,6 +263,25 @@ const CustomerDetail = () => {
                       <span className="no-items">No items</span>
                     )}
                   </div>
+                 
+                  <div className="amount">
+                    ₹{Number(entry.subTotal || 0).toLocaleString()}
+                  </div>
+                  <div className="amount">
+                    ₹{Number(entry.totalGST || 0).toLocaleString()}
+                  </div>
+                  <div className="amount">
+                    ₹{Number(entry.grandTotal || 0).toLocaleString()}
+                  </div>
+                  <div className="amount">
+                    ₹{Number(entry.amountPaid || 0).toLocaleString()}
+                  </div>
+                  <div className="amount">
+                    ₹{Number(entry.dueAmount || 0).toLocaleString()}
+                  </div>
+
+                  
+              
 
                   <div>
                     <span

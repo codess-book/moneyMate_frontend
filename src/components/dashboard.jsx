@@ -43,19 +43,20 @@ const Dashboard = () => {
         const res = await fetch(`${apiBaseUrl}/api/notifications`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         if (res.ok) {
           const data = await res.json();
           setNotifications(data);
-          setUnreadCount(data.filter((n) => !n.read).length);
+          setUnreadCount(data.filter((n) => !n.isRead).length);
         }
+        
       } catch (error) {
         console.error("Failed to fetch notifications", error);
       }
     };
     fetchNotifications();
   }, []);
-
-
+  
   useEffect(() => {
     socket.on("connect", () => {
       ("🟢 Socket connected:", socket.id);
@@ -72,7 +73,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    setUnreadCount(notifications.filter((n) => !n.read).length);
+    setUnreadCount(notifications.filter((n) => !n.isRead).length);
   }, [notifications]);
 
   // Handler to remove notification by id (will be passed down)

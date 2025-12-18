@@ -42,6 +42,7 @@ export default function SupplierHistoryPage() {
 
     // find the selected item from the already fetched items list
     const selected = items.find((item) => item._id === selectedItemId);
+   
     if (selected) {
       setHistory(selected.suppliers || []);
       setSelectedItemName(selected.name);
@@ -68,6 +69,8 @@ export default function SupplierHistoryPage() {
         <div className="items-panel">
           <div className="panel-header">
             <h2 className="panel-title">📦 Items</h2>
+          
+              <p className="panel-title">Total Items:{filteredItems.length}</p>
           </div>
 
           <div className="search-container">

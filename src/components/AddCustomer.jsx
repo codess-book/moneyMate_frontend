@@ -309,19 +309,7 @@ const AddCustomer = () => {
     setIsLoading(true);
     setError(null);
 
-    // Validation
-    // const invalidItems = items.some(
-    //   (item) =>
-    //     !item.name?.trim() ||
-    //     !item.category?.trim() || // ✅ Check category
-    //     item.quantity <= 0 ||
-    //     item.pricePerUnit < 0
-    // );
-    // if (invalidItems) {
-    //   setError("Please fill all item fields with valid values");
-    //   setIsLoading(false);
-    //   return;
-    // }
+   
 
     if (formData.paidAmount < 0 || formData.paidAmount > grandTotal) {
       setError("Paid amount must be between 0 and total amount");
@@ -422,10 +410,7 @@ const AddCustomer = () => {
           },
         ]);
 
-        // Navigate
-        // setTimeout(() => {
-        //   navigate("/dashboard/viewCustomers");
-        // }, 500);
+        
       }
     } catch (err) {
       const data = err?.response?.data;
