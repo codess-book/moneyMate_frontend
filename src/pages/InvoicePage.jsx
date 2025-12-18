@@ -11,7 +11,6 @@ const InvoicePage = () => {
   useEffect(() => {
     const fetchInvoice = async () => {
       const res = await fetch(`${apiBaseUrl}/api/invoice/${invoiceNo}`);
-      console.log("res", res);
       const data = await res.json();
       setInvoice(data);
     };

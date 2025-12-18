@@ -47,7 +47,6 @@ useEffect(() => {
       });
 
     const data2 = await res.json();
-console.log("Chart Data:", data2);
 
 if (!Array.isArray(data2.revenue) || !Array.isArray(data2.sales)) {
   throw new Error("Expected arrays for both revenue and sales");

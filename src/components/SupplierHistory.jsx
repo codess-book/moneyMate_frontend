@@ -35,7 +35,6 @@ export default function SupplierHistoryPage() {
       .catch(() => setLoadingItems(false));
   }, []);
 
-  console.log(items, "items");
 
   // *******************************
   //   2️⃣ Fetch Supplier History for Selected Item
@@ -47,7 +46,6 @@ export default function SupplierHistoryPage() {
 
     // find the selected item from the already fetched items list
     const selected = items.find((item) => item._id === selectedItemId);
-    console.log(selected, "selected");
     if (selected) {
       setHistory(selected.suppliers || []);
       setSelectedItemName(selected.name);

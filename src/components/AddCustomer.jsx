@@ -145,7 +145,6 @@ const AddCustomer = () => {
   const handleProductChange = (index, selectedOption) => {
     // const productName = selectedOption?.value || "";
     const product = selectedOption?.product;
-    console.log("product", product);
 
     // Find product in inventory
     // const product = allProducts.find((p) => p.name === productName);
@@ -440,14 +439,11 @@ const AddCustomer = () => {
 
   useEffect(() => {
     if (printData) {
-      console.log("printData updated, triggering print...");
       const timer = setTimeout(() => {
         if (printRef.current) {
-          console.log("Calling window.print()");
           window.print();
           setPrintData(null);
         } else {
-          console.log("printRef.current not found");
         }
       }, 500);
       return () => clearTimeout(timer);

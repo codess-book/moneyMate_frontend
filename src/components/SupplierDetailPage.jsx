@@ -28,7 +28,6 @@ export default function SupplierDetailPage() {
       });
   }, [phone, passedSupplier]);
 
-  console.log("supplier",supplier);
 
   if (loading) return <div className="loading">Loading...</div>;
   if (!supplier) return <h2>No Supplier Found</h2>;

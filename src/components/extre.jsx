@@ -37,7 +37,6 @@
 
 //       if (res.ok) {
 //         const data = await res.json();
-//         console.log(data, "data");
 
 //         const supplier = data.supplier;
 
@@ -67,7 +66,6 @@
 //         toast.info("New supplier");
 //       }
 //     } catch (err) {
-//       console.log(err);
 //       toast.error("Error fetching supplier");
 //     }
 
@@ -96,7 +94,6 @@
 //       const data = await res.json();
 //       setItems(data.items);
 
-//       console.log("al items",data.items);
 //     } catch (err) {
 //       toast.error("Failed to load inventory!");
 //     }
@@ -147,7 +144,6 @@
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
 //     // form.supplier_quantity=form.quantity
-//     console.log("here",form.supplier_quantity)
 //     const {
 //       item_name,
 //       quantity,
@@ -160,7 +156,6 @@
 //       bought_price,
 //       supplier_quantity,
 //     } = form;
-//     // console.log(supplier_name, "supplier");
 
 //     // if (
 //     //   !item_name ||
@@ -191,7 +186,6 @@
 //     const url = editingId ? `${API_URL}/${editingId}` : API_URL;
 
 //     const initialQuantity = method === "POST" ? Number(quantity) : 0;
-//     console.log(initialQuantity, "initial");
 //     const payload = {
 //       name: item_name,
 //       quantity: initialQuantity,

@@ -81,7 +81,6 @@ const AddPayment = () => {
   if (!customer) return null;
 
 
-  console.log("i will do it and  is  bsi");
  
   
 

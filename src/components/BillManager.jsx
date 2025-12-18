@@ -59,7 +59,6 @@
 
 ////const handleResendAll = async (customerId) => {
 
-////      console.log("🔁 Resending all bills for:", customerId);
 ////  try {
 ////    const res = await fetch(`${BASE_URL}/payment/${customerId}/resend-all`, {
 ////      method: "POST",

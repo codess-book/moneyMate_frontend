@@ -48,7 +48,6 @@ export default function Inventory() {
 
       if (res.ok) {
         const data = await res.json();
-        // console.log(data, "data");
 
         const supplier = data.supplier;
 
@@ -78,7 +77,6 @@ export default function Inventory() {
         toast.info("New supplier");
       }
     } catch (err) {
-      console.log(err);
       toast.error("Error fetching supplier");
     }
 
@@ -116,7 +114,6 @@ export default function Inventory() {
         },
       });
 
-      console.log("data", data);
       let fetchedItems = data.items;
 
       // Low / High stock filter (client side)
@@ -178,7 +175,6 @@ export default function Inventory() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // form.supplier_quantity=form.quantity
-    console.log("here", form.supplier_quantity);
     const {
       item_name,
       quantity,
@@ -191,7 +187,6 @@ export default function Inventory() {
       bought_price,
       supplier_quantity,
     } = form;
-    // console.log(supplier_name, "supplier");
 
     // if (
     //   !item_name ||
@@ -221,7 +216,6 @@ export default function Inventory() {
       : `${API}/api/inventory`;
 
     const initialQuantity = method === "POST" ? Number(quantity) : 0;
-    console.log(initialQuantity, "initial");
     const payload = {
       name: item_name,
       quantity: initialQuantity,
@@ -302,7 +296,6 @@ export default function Inventory() {
 
   // edit
   const handleEdit = (item) => {
-    console.log("hitt");
     setForm({
       item_name: item.name || item.item?.name || "",
       quantity: item.currentStock || "",
