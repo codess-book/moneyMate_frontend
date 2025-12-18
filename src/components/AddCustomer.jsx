@@ -42,8 +42,8 @@ const AddCustomer = () => {
     {
       category: "",
       name: "",
-      quantity: "",
-      pricePerUnit: "",
+      quantity: 0,
+      pricePerUnit: 0,
       unit: "",
       gstRate: 0, // Default no GST
       taxableAmount: 0,
@@ -132,7 +132,7 @@ const AddCustomer = () => {
         ...newItems[index],
         category,
         name: "", // Reset product
-        pricePerUnit: "",
+        pricePerUnit: 0,
         unit: "",
       };
       return newItems;
@@ -159,7 +159,7 @@ const AddCustomer = () => {
           ...newItems[index],
           itemId: product._id,
           name: product.name,
-          pricePerUnit: product.price || "",
+          pricePerUnit: product.price || 0,
           unit: product.unit || "",
           category: product.category,
         };
@@ -208,8 +208,8 @@ const AddCustomer = () => {
       {
         category: "",
         name: "",
-        quantity: "",
-        pricePerUnit: "",
+        quantity: 0,
+        pricePerUnit: 0,
         unit: "",
         gstRate: 0,
         taxableAmount: 0,
@@ -413,8 +413,8 @@ const AddCustomer = () => {
           {
             category: "",
             name: "",
-            quantity: "",
-            pricePerUnit: "",
+            quantity: 0,
+            pricePerUnit: 0,
             unit: "",
             gstRate: 0,
             taxableAmount: 0,
@@ -500,7 +500,6 @@ const AddCustomer = () => {
                     <p className="company-tagline">किसानों का विश्वसनीय साथी</p>
                     <p className="company-address">
                       जावरा बायपास रोड, आर्य पेट्रोल पंप के पास, नागदा
-                    
                     </p>
                     <div className="contact-details">
                       <span>📞 +91 7000315367</span>
@@ -720,6 +719,8 @@ const AddCustomer = () => {
         </div>
       )}
       {/* MAIN FORM */}
+      {/* <div className={styles.formContainer}> */}
+
       <div className="form-container">
         <div className="form-header">
           <h2>Add / Update Customer</h2>
@@ -729,7 +730,7 @@ const AddCustomer = () => {
         <form onSubmit={handleSubmit} className="customer-form">
           {/* CUSTOMER INFO */}
           <div className="form-section">
-            <h3 className="section-title">Customer Information</h3>
+            {/* <h3 className="section-title">Customer Information</h3> */}
 
             <div className="input-group">
               <label className="input-label">
@@ -787,15 +788,15 @@ const AddCustomer = () => {
                 onChange={handleChange}
                 placeholder="Enter address"
                 rows="3"
-                className="form-textarea"
+                className="form-input"
               />
             </div>
           </div>
 
           {/* ITEMS WITH GST */}
-          <div className="form-section">
-            <h3 className="section-title">
-              <FiShoppingCart /> Items / Services
+          <div className="form-input">
+            <h3 className="section-title ">
+              <FiShoppingCart /> Add Items
             </h3>
 
             {items.map((item, index) => {
@@ -817,15 +818,23 @@ const AddCustomer = () => {
 
               return (
                 <div key={index} className="item-card">
-                  <div className="item-header">
-                    <span>Item {index + 1}</span>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        ITEM
+                      </span>
+                      <span className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                        {index + 1}
+                      </span>
+                    </div>
                     <button
                       type="button"
                       onClick={() => removeItem(index)}
                       disabled={items.length <= 1}
-                      className="remove-item-btn"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:text-gray-400 dark:disabled:text-gray-600 disabled:bg-transparent disabled:cursor-not-allowed rounded-md border border-gray-300 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-700 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-red-500"
                     >
-                      <FiTrash2 />
+                      <FiTrash2 className="w-3.5 h-3.5 px-3 py-3" />
+                      <span className="font-medium">Remove</span>
                     </button>
                   </div>
 
@@ -864,98 +873,242 @@ const AddCustomer = () => {
                   </div>
 
                   {/* Details Grid */}
-                  <div className="item-details-grid">
-                    <div className="detail-group">
-                      <label className="detail-label">Quantity</label>
-                      <input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          handleItemChange(index, "quantity", e.target.value)
-                        }
-                        placeholder="0"
-                        className="detail-input"
-                        min="0"
-                        // step="0.01"
-                        onWheel={(e) => e.target.blur()}
-                      />
+                  {/* Item Details - Single Column Layout */}
+                  <div className="space-y-4 mb-6">
+                    {/* Quantity */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-black-700 dark:text-black-300">
+                          Quantity
+                        </label>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          Required
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        
+                        </div>
+                        <input
+                          type="number"
+                          value={item.quantity}
+                          onChange={(e) =>
+                            handleItemChange(index, "quantity", e.target.value)
+                          }
+                          placeholder="Enter quantity"
+                          className="w-full pl-10 pr-4 py-3 bg-white  border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600 transition-all duration-200 placeholder:text-gray-400 dark:placeholder:text-black-500 text-black-900 dark:text-black-100"
+                          min="0"
+                          onWheel={(e) => e.target.blur()}
+                        />
+                      </div>
                     </div>
 
-                    <div className="detail-group">
-                      <label className="detail-label">Unit</label>
-                      <input
-                        type="text"
-                        value={item.unit}
-                        onChange={(e) =>
-                          handleItemChange(index, "unit", e.target.value)
-                        }
-                        placeholder="kg/pcs"
-                        className="detail-input"
-                      />
+                    {/* Unit */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-black-700 dark:text-black-300">
+                          Unit
+                        </label>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          kg/ltr/pcs
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                         
+                          
+                        </div>
+                        <input
+                          type="text"
+                          value={item.unit}
+                          onChange={(e) =>
+                            handleItemChange(index, "unit", e.target.value)
+                          }
+                          placeholder="Enter unit (kg, ltr, pcs, etc.)"
+                          className="w-full pl-10 pr-4 py-3 bg-white  border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600 transition-all duration-200 placeholder:text-gray-400 dark:placeholder:text-black-500 text-black-900 dark:text-black-100"
+                        />
+                      </div>
                     </div>
 
-                    <div className="detail-group">
-                      <label className="detail-label">Price/Unit (₹)</label>
-                      <input
-                        type="number"
-                        value={item.pricePerUnit}
-                        onChange={(e) =>
-                          handleItemChange(
-                            index,
-                            "pricePerUnit",
-                            e.target.value
-                          )
-                        }
-                        placeholder="0"
-                        className="detail-input"
-                        min="0"
-                        // step="0.01"
-                        onWheel={(e) => e.target.blur()}
-                      />
+                    {/* Price/Unit */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-black-700 dark:text-black-300">
+                          Price per Unit
+                        </label>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          In Rupees
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                          ₹
+                        </div>
+                        <input
+                          type="number"
+                          value={item.pricePerUnit}
+                          onChange={(e) =>
+                            handleItemChange(
+                              index,
+                              "pricePerUnit",
+                              e.target.value
+                            )
+                          }
+                          placeholder="Enter price per unit"
+                          className="w-full pl-10 pr-4 py-3 bg-white  border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600 transition-all duration-200 placeholder:text-gray-400 dark:placeholder:text-black-500 text-black-900 dark:text-black-100"
+                          min="0"
+                          onWheel={(e) => e.target.blur()}
+                        />
+                      </div>
                     </div>
 
-                    <div className="detail-group">
-                      <label className="detail-label">GST </label>
-                      <select
-                        value={item.gstRate}
-                        onChange={(e) =>
-                          handleItemChange(index, "gstRate", e.target.value)
-                        }
-                        className="detail-input"
-                      >
-                        {/* <option value="0">No GST (0%)</option>
-                        <option value="5">5%</option>
-                        <option value="12">12%</option>
-                        <option value="18">18%</option>
-                      
-                         <option value="12">12%</option>
-                        <option value="18">18%</option>
-                        <option value="28">28%</option> */}
-                        {Array.from({ length: 30 }, (_, i) => i + 0).map(
-                          (gst) => (
-                            <option key={gst} value={gst}>
-                              {gst}%
-                            </option>
-                          )
-                        )}
-                      </select>
+                    {/* GST */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-black-700 dark:text-black-300">
+                          GST Rate
+                        </label>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          Percentage
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                         
+                        </div>
+                        <select
+                          value={item.gstRate}
+                          onChange={(e) =>
+                            handleItemChange(index, "gstRate", e.target.value)
+                          }
+                          className="w-full pl-10 pr-10 py-3 bg-white  border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600 transition-all duration-200 appearance-none cursor-pointer text-black-900 dark:text-black-100"
+                        >
+                          <option value="" disabled>
+                            Select GST rate
+                          </option>
+                          {Array.from({ length: 30 }, (_, i) => i + 0).map(
+                            (gst) => (
+                              <option key={gst} value={gst} className="py-2">
+                                {gst}%{" "}
+                                {gst === 0
+                                  ? "(No GST)"
+                                  : gst === 5
+                                  ? "(5% GST)"
+                                  : gst === 12
+                                  ? "(12% GST)"
+                                  : gst === 18
+                                  ? "(18% GST)"
+                                  : gst === 28
+                                  ? "(28% GST)"
+                                  : ""}
+                              </option>
+                            )
+                          )}
+                        </select>
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-400">
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
+                  {/* Calculations - Bill Style */}
+                  <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
+                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                        />
+                      </svg>
+                      Bill Calculation
+                    </h4>
+
+                    <div className="space-y-3  ">
+                      {/* Taxable Amount */}
+                      <div className="flex items-center justify-between py-2 px-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span className="text-sm text-gray-600 dark:text-black-400">
+                            Taxable Amount
+                          </span>
+                        </div>
+                        <div className="text-sm font-medium text-black-800 dark:text-black-200">
+                          ₹{item.taxableAmount.toFixed(2)}
+                        </div>
+                      </div>
+
+                      {/* GST Amount */}
+                      <div className="flex items-center justify-between py-6 px-6 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                        <div className="flex items-center  gap-3">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-sm text-gray-600 dark:text-black-400">
+                            GST Amount ({item.gstRate}%)
+                          </span>
+                        </div>
+                        <div className="text-sm font-medium text-black-600 dark:text-black-400">
+                          ₹{item.gstAmount.toFixed(2)}
+                        </div>
+                      </div>
+
+                      {/* Total Amount */}
+                      <div className="flex items-center justify-between py-3 px- bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                          <span className="text-sm font-semibold text-white">
+                            Total Amount
+                          </span>
+                        </div>
+                        <div className="text-lg font-bold text-white">
+                          ₹{item.totalAmount.toFixed(2)}
+                        </div>
+                      </div>
+
+                      {/* Breakup (Optional) */}
+                      {/* <div className="mt-3 text-xs text-gray-500 dark:text-gray-400 text-center">
+                        {item.quantity} × ₹{item.pricePerUnit} = ₹
+                        {(item.quantity * item.pricePerUnit).toFixed(2)} + GST
+                      </div> */}
+                    </div>
+                  </div>
                   {/* Calculations */}
-                  <div className="item-calculations">
+                  {/* <div className="item-calculations">
                     <div>Taxable: ₹{item.taxableAmount.toFixed(2)}</div>
                     <div>GST: ₹{item.gstAmount.toFixed(2)}</div>
                     <div>
                       <strong>Total: ₹{item.totalAmount.toFixed(2)}</strong>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               );
             })}
 
-            <button type="button" onClick={addItem} className="add-item-btn">
-              <FiPlus /> Add Item
+            <button
+              type="button"
+              onClick={addItem}
+              className="group flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 border-2 border-dashed border-blue-200 dark:border-gray-700 rounded-xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg hover:shadow-blue-100 dark:hover:shadow-blue-900/20 transition-all duration-300 hover:-translate-y-0.5 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
+            >
+              <FiPlus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+              Add Item
             </button>
           </div>
 
@@ -1047,6 +1200,7 @@ const AddCustomer = () => {
         </form>
       </div>
     </div>
+    // </div>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import "../styles/supplier.css";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:5000/api/inventory";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function SupplierHistoryPage() {
   const [items, setItems] = useState([]);
@@ -14,13 +14,12 @@ export default function SupplierHistoryPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  // *******************************
-  //   1️⃣ Fetch All Items
-  // *******************************
+  //   Fetch All Items
+
   useEffect(() => {
     setLoadingItems(true);
 
-    fetch(`${API_URL}/allItems`)
+    fetch(`${API_URL}/api/inventory/allItems`)
       .then((res) => res.json())
       .then((data) => {
         setItems(data.items);
@@ -35,11 +34,8 @@ export default function SupplierHistoryPage() {
       .catch(() => setLoadingItems(false));
   }, []);
 
-  console.log(items, "items");
+  // console.log(items, "items");
 
-  // *******************************
-  //   2️⃣ Fetch Supplier History for Selected Item
-  // *******************************
   useEffect(() => {
     if (!selectedItemId || items.length === 0) return;
 
@@ -47,7 +43,7 @@ export default function SupplierHistoryPage() {
 
     // find the selected item from the already fetched items list
     const selected = items.find((item) => item._id === selectedItemId);
-    console.log(selected, "selected");
+    // console.log(selected, "selected");
     if (selected) {
       setHistory(selected.suppliers || []);
       setSelectedItemName(selected.name);
@@ -56,9 +52,6 @@ export default function SupplierHistoryPage() {
     setLoadingHistory(false);
   }, [selectedItemId, items]);
 
-  // *******************************
-  //   3️⃣ Filter Items by Search
-  // *******************************
   const filteredItems = useMemo(() => {
     return items.filter((item) =>
       item.name.toLowerCase().includes(searchTerm.toLowerCase())

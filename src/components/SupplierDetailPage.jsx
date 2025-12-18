@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import "../styles/supplierDetails.css";
 
-const API_URL = "http://localhost:5000/api/inventory";
+// const API_URL = "http://localhost:5000/api/inventory";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function SupplierDetailPage() {
   const { phone } = useParams();
@@ -20,7 +21,7 @@ export default function SupplierDetailPage() {
     if (passedSupplier) return;
 
     // Otherwise fetch from API
-    fetch(`${API_URL}/supplierByPhone/${phone}`)
+    fetch(`${API_URL}/api/inventory/supplierByPhone/${phone}`)
       .then((res) => res.json())
       .then((data) => {
         setSupplier(data.supplier);
@@ -28,7 +29,7 @@ export default function SupplierDetailPage() {
       });
   }, [phone, passedSupplier]);
 
-  console.log("supplier",supplier);
+
 
   if (loading) return <div className="loading">Loading...</div>;
   if (!supplier) return <h2>No Supplier Found</h2>;
