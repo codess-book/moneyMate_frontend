@@ -25,6 +25,7 @@ import Inventory from "./components/Logistics";
 import SupplierHistoryPage from "./components/SupplierHistory";
 import SupplierDetailPage from "./components/SupplierDetailPage";
 import InvoicePage from "./pages/InvoicePage"
+import Notifications from "./components/Notifications";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -53,6 +54,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<AdminPanel />} />
+            <Route path="notifications" element={<Notifications/>} />
             <Route path="customers" element={<AddCustomer />} />
             <Route path="viewCustomers" element={<CustomerList />}></Route>
             <Route
@@ -68,7 +70,7 @@ function App() {
             <Route path="logistics" element={<Inventory />}></Route>
             <Route path="supplier" element={<SupplierHistoryPage />} />
             <Route path="supplier/:phone" element={<SupplierDetailPage />} />
-            
+
           </Route>
         </Route>
 

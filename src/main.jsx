@@ -18,10 +18,8 @@ const RootComponent = () => {
   //  updateServiceWorker
   //} = useRegisterSW({
   //  onOfflineReady() {
-  //    console.log('✅ App is ready to work offline');
   //  },
   //  onNeedRefresh() {
-  //    console.log('🔄 New content available');
   //  },
   //});
 // 👇 Add this right here

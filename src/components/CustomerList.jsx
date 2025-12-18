@@ -147,7 +147,6 @@ const CustomerList = () => {
   };
 
   const handleNavigatepayment = async (id) => {
-    console.log("hit");
 
     try {
       const token = localStorage.getItem("token"); //  Get token from localStorage
@@ -166,7 +165,6 @@ const CustomerList = () => {
 
   //to send reminders
   const sendReminder = async (customerId) => {
-    console.log(customerId);
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
@@ -188,7 +186,6 @@ const CustomerList = () => {
   };
 
   const handleNavigateview = async (id) => {
-    console.log("hitt");
     const token = localStorage.getItem("token");
     const res = await axios.get(`${apiBaseUrl}/api/customers/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -203,7 +200,6 @@ const CustomerList = () => {
   };
 
   const handleNavigateedit = (customerId) => {
-    console.log("hot", customerId);
     navigate(`/dashboard/EditCustomer/${customerId}`);
   };
 

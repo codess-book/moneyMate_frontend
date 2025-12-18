@@ -34,7 +34,6 @@ export default function SupplierHistoryPage() {
       .catch(() => setLoadingItems(false));
   }, []);
 
-  // console.log(items, "items");
 
   useEffect(() => {
     if (!selectedItemId || items.length === 0) return;
@@ -43,7 +42,6 @@ export default function SupplierHistoryPage() {
 
     // find the selected item from the already fetched items list
     const selected = items.find((item) => item._id === selectedItemId);
-    // console.log(selected, "selected");
     if (selected) {
       setHistory(selected.suppliers || []);
       setSelectedItemName(selected.name);

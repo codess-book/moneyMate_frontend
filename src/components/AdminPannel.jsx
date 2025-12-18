@@ -37,7 +37,6 @@ const AdminPanel = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        //console.log("Profile Data:", response.data);
         setCustomerSummary(response.data);
       } catch (error) {
         console.error(
@@ -59,7 +58,6 @@ const AdminPanel = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        // console.log("Upcoming Payments:", res.data); //  Check Console
         setUpcoming(res.data); // make sure res.data is the array
       } catch (err) {
         console.error("Error fetching upcoming payments:", err);
@@ -73,7 +71,6 @@ const AdminPanel = () => {
   if (!customerSummary) return <p>Loading dashboard...</p>;
 
   const sendReminder = async (customerId) => {
-    console.log(customerId);
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(

@@ -39,13 +39,11 @@ const EditCustomer = () => {
 
         const data = await response.json();
 
-        console.log(data);
         if (!response.ok) {
           throw new Error(data.message || "Failed to fetch customer");
         }
 
         setCustomer(data);
-        //console.log(data);
       } catch (error) {
         console.error("Fetch Error:", error);
         toast.error(error.message || "Error fetching customer details");

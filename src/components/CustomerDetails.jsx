@@ -13,7 +13,6 @@ const apiBaseUrl = import.meta.env.VITE_API_URL;
 
 const CustomerDetail = () => {
   const { id } = useParams();
-  console.log("CustomerDetail mounted, id =", id);
   const navigate = useNavigate();
 
   const [customer, setCustomer] = useState(null);
@@ -41,19 +40,14 @@ const CustomerDetail = () => {
 
   useEffect(() => {
     const fetchCustomer = async () => {
-      console.log("About to fetch /api/payment/customer/" + id);
       try {
         const token = localStorage.getItem("token");
-        console.log("token", token);
         const res = await axios.get(
           `${apiBaseUrl}/api/payment/customer/${id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setCustomer(res.data.customer);
         setPayments(res.data.payments);
-        console.log("payment", res.data.payments);
-        console.log(".....", res.data.customer);
-        //console.log("✅ Fetched payments:", res.data.payments.length, res.data.payments)
       } catch (err) {
         //console.error("Failed to fetch customer:", err);
         alert("❌ Customer not found");
