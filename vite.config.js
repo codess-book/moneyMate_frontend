@@ -80,7 +80,7 @@ export default defineConfig({
         "AryaFarm-512.png",
       ],
       manifest: {
-        name: "Arya Krishi Farm",
+        name: "Arya Krishi seva krndra",
         short_name: "AryaKrishi",
         description: "कृषि और खेती के प्रबंधन के लिए ऐप",
         theme_color: "#ffffff",
