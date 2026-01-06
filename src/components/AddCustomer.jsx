@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import CreatableSelect from "react-select/creatable";
-import { toast } from "react-toastify";
+import {  } from "react-ify";
 import {
   FiUser,
   FiPhone,
@@ -88,7 +88,7 @@ const AddCustomer = () => {
       })
       .catch((err) => {
         console.error("Error loading items:", err);
-        toast.error("Failed to load products");
+        // .error("Failed to load products");
       })
       .finally(() => setLoadingProducts(false));
   }, []);
