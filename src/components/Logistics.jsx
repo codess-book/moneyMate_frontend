@@ -87,9 +87,10 @@ export default function Inventory() {
   };
 
   const [form, setForm] = useState({
-    item_name: "",
+    name: "",
     quantity: "",
-    stockAlert: "",
+    lowStockAlert: "",
+    Note: "",
     price: "",
     supplier_name: "",
     phone: "",
@@ -102,7 +103,7 @@ export default function Inventory() {
   const [editingId, setEditingId] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // 🔥 Fetch items
+  // Fetch items
   const fetchItems = async () => {
     setLoading(true);
     try {
@@ -118,8 +119,6 @@ export default function Inventory() {
       });
 
       let fetchedItems = data.items;
-
-      
 
       // Low / High stock filter (client side)
       if (filters.stock) {
@@ -146,9 +145,10 @@ export default function Inventory() {
   const handleAddItemClick = () => {
     setIsAddItem(true);
     setForm({
-      item_name: "",
+      name: "",
       quantity: "",
-      stockAlert: "",
+      lowStockAlert: "",
+      Note: "",
       price: "",
       supplier_name: "",
       phone: "",
@@ -164,9 +164,10 @@ export default function Inventory() {
     setShowModal(false);
     setEditingId(null);
     setForm({
-      item_name: "",
+      name: "",
       quantity: "",
-      stockAlert: "",
+      lowStockAlert: "",
+      Note: "",
       price: "",
       supplier_name: "",
       phone: "",
@@ -181,9 +182,10 @@ export default function Inventory() {
     e.preventDefault();
     // form.supplier_quantity=form.quantity
     const {
-      item_name,
+      name,
       quantity,
-      stockAlert,
+      lowStockAlert,
+      Note,
       price,
       supplier_name,
       phone,
@@ -222,11 +224,13 @@ export default function Inventory() {
 
     const initialQuantity = method === "POST" ? Number(quantity) : 0;
     const payload = {
-      name: item_name,
+      name: name,
       quantity: initialQuantity,
-      stockAlert: Number(stockAlert),
+      lowStockAlert: Number(lowStockAlert),
+
       price: Number(price),
       category: form.category,
+      Note: Note,
     };
 
     if (hasSupplierInfo) {
@@ -310,9 +314,10 @@ export default function Inventory() {
   // edit
   const handleEdit = (item) => {
     setForm({
-      item_name: item.name || item.item?.name || "",
+      name: item.name || item.item?.name || "",
       quantity: item.currentStock || "",
-      stockAlert: item.lowStockAlert || "",
+      lowStockAlert: item.lowStockAlert || "",
+      Note: item.Note || "",
       price: item.price || "",
       supplier_name: "",
       category: item.category,
@@ -433,6 +438,7 @@ export default function Inventory() {
                   <th>Low Stock Alert</th>
                   <th>Status</th>
                   <th>Stock Level</th>
+                  <th>Note</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -458,7 +464,7 @@ export default function Inventory() {
                       >
                        
                       </span> */}
-                       {item.status}
+                      {item.status}
                     </td>
                     <td data-label="Stock Level">
                       <span
@@ -473,6 +479,10 @@ export default function Inventory() {
                           : "✅ High Stock"}
                       </span>
                     </td>
+                    <td data-label="Note">
+                      <div className="note-cell">{item.Note || "-"}</div>
+                    </td>
+
                     <td data-label="Actions">
                       <div className="action-buttons">
                         <button
@@ -575,9 +585,9 @@ export default function Inventory() {
                       type="text"
                       className="form-input"
                       placeholder="e.g. Organic Wheat Seeds"
-                      value={form.item_name}
+                      value={form.name}
                       onChange={(e) =>
-                        setForm({ ...form, item_name: e.target.value })
+                        setForm({ ...form, name: e.target.value })
                       }
                       required
                       disabled={!!editingId}
@@ -669,16 +679,29 @@ export default function Inventory() {
                       min="0"
                       className="form-input"
                       placeholder="5"
-                      value={form.stockAlert}
+                      value={form.lowStockAlert}
                       onChange={(e) =>
                         setForm({
                           ...form,
-                          stockAlert:
+                          lowStockAlert:
                             e.target.value === "" ? "" : Number(e.target.value),
                         })
                       }
                       required
                       onWheel={(e) => e.target.blur()}
+                    />
+                  </div>
+
+                  {/* Extra Note */}
+                  <div className="form-group">
+                    <label className="form-label required">Note*</label>
+                    <textarea
+                      className="form-input"
+                      placeholder="1 bigha mein iti use hogi.."
+                      value={form.Note}
+                      onChange={(e) =>
+                        setForm({ ...form, Note: e.target.value })
+                      }
                     />
                   </div>
                 </div>

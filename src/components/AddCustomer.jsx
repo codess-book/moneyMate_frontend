@@ -309,8 +309,6 @@ const AddCustomer = () => {
     setIsLoading(true);
     setError(null);
 
-   
-
     if (formData.paidAmount < 0 || formData.paidAmount > grandTotal) {
       setError("Paid amount must be between 0 and total amount");
       setIsLoading(false);
@@ -409,8 +407,6 @@ const AddCustomer = () => {
             totalAmount: 0,
           },
         ]);
-
-        
       }
     } catch (err) {
       const data = err?.response?.data;
@@ -419,10 +415,19 @@ const AddCustomer = () => {
 
       if (data?.code === "LOW_STOCK") {
         errorMessage = `⚠️ ${data.message}`;
-      } else if (data?.message) {
-        errorMessage = data.message;
-      } else if (err.message) {
-        errorMessage = err.message;
+        // You could also show a modal with detailed info
+        toast.error(
+          <div>
+            <strong>Low Stock Alert!</strong>
+            <br />
+            {data.productName}: Available {data.availableQty}, Required{" "}
+            {data.requiredQty}
+            <br />
+            {data.message}
+          </div>,
+          { duration: 5000 }
+        );
+        return; // Early return to prevent further processing
       }
 
       setError(errorMessage);

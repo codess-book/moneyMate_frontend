@@ -26,6 +26,7 @@ import SupplierHistoryPage from "./components/SupplierHistory";
 import SupplierDetailPage from "./components/SupplierDetailPage";
 import InvoicePage from "./pages/InvoicePage"
 import Notifications from "./components/Notifications";
+console.log(import.meta.env.VITE_API_URL);
 
 function App() {
   const [count, setCount] = useState(0);

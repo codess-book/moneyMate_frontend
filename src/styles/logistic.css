@@ -565,6 +565,17 @@
   border-color: #10b981;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
+/* note
+ */
+.note-cell {
+  max-width: 220px;      /* control column width */
+  max-height: 60px;      /* control row height */
+  overflow-y: auto;      /* vertical scroll */
+  overflow-x: hidden;
+  white-space: normal;   /* allow wrapping */
+  word-break: break-word;
+  font-size: 14px;
+}
 
 .form-input:disabled,
 .form-select:disabled,

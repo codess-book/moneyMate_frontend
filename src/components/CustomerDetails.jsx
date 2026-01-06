@@ -47,7 +47,10 @@ const CustomerDetail = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setCustomer(res.data.customer);
+
+        // console.log("data",res.data.customer);
         setPayments(res.data.payments);
+        console.log("data", res.data.payments);
       } catch (err) {
         //console.error("Failed to fetch customer:", err);
         alert("❌ Customer not found");
@@ -202,7 +205,7 @@ const CustomerDetail = () => {
         <h3>Payment History</h3>
         <p>{payments.length} transactions</p>
       </div>
-{/* payment history tabel */}
+      {/* payment history tabel */}
       <div className="payment-history">
         {payments.length > 0 ? (
           <>
@@ -223,8 +226,8 @@ const CustomerDetail = () => {
                 <div className="table-row" key={idx}>
                   <div>{new Date(entry.paymentDate).toLocaleDateString()}</div>
 
-                 {/* for showing all items */}
-                     <div className="items-column">
+                  {/* for showing all items */}
+                  <div className="items-column">
                     {entry.items?.length > 0 ? (
                       <>
                         <div className="items-list">
@@ -263,15 +266,26 @@ const CustomerDetail = () => {
                       <span className="no-items">No items</span>
                     )}
                   </div>
+
+                  <div className="amount">
+                    {
+                      entry.billStatus !== "updated"
+                        ? `₹${Number(entry.subTotal || 0).toLocaleString()}`
+                        : "—" // Show dash or empty when status is "updated"
+                    }
+                  </div>
+
+                  <div className="amount">
+                    {/* ₹{Number(entry.totalGST || 0).toLocaleString()} */}
+                    {entry.billStatus !== "updated"
+                      ? `₹${Number(entry.totalGST || 0).toLocaleString()}`
+                      : "—"}
+                  </div>
+                  <div className="amount">
+                    {
+                      entry.billStatus !=="updated"?  ` ₹${Number(entry.grandTotal || 0).toLocaleString()}`:"—"
+                    }
                  
-                  <div className="amount">
-                    ₹{Number(entry.subTotal || 0).toLocaleString()}
-                  </div>
-                  <div className="amount">
-                    ₹{Number(entry.totalGST || 0).toLocaleString()}
-                  </div>
-                  <div className="amount">
-                    ₹{Number(entry.grandTotal || 0).toLocaleString()}
                   </div>
                   <div className="amount">
                     ₹{Number(entry.amountPaid || 0).toLocaleString()}
@@ -279,9 +293,6 @@ const CustomerDetail = () => {
                   <div className="amount">
                     ₹{Number(entry.dueAmount || 0).toLocaleString()}
                   </div>
-
-                  
-              
 
                   <div>
                     <span
