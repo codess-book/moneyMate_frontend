@@ -453,7 +453,7 @@ export default function Inventory() {
                       <span className="category-badge">{item.category}</span>
                     </td>
                     <td data-label="Unit">{item.unit}</td>
-                    <td data-label="Price">₹{item.price.toLocaleString()}</td>
+                    <td data-label="Price">₹{item.price}</td>
                     <td data-label="Current Stock">
                       <span className="stock-count">{item.currentStock}</span>
                     </td>
