@@ -149,7 +149,7 @@ const Dashboard = () => {
 
             {/* brand text - mobile hidden */}
             <span className="brand-text text-green text-lg font-semibold hidden sm:block">
-              Arya Krishi Farm
+            ARYA KRISHI SEVA KENDRA
             </span>
           </div>
 
@@ -238,7 +238,7 @@ const Dashboard = () => {
               }}
             >
               <FiHome className="nav-icon" />
-              <span className="nav-text">Dashboard</span>
+              <span className="brand-text text-green text-sm font-semibold  sm:block">DASHBOARD</span>
             </li>
 
             <li
@@ -251,7 +251,7 @@ const Dashboard = () => {
               }}
             >
               <FiUserPlus className="nav-icon" />
-              <span className="nav-text">Add Farmers</span>
+              <span className="brand-text text-green text-sm font-semibold  sm:block">ADD FARMERS</span>
             </li>
 
             <li
@@ -264,7 +264,7 @@ const Dashboard = () => {
               }}
             >
               <FiUsers className="nav-icon" />
-              <span className="nav-text">View Farmers</span>
+              <span className="brand-text text-green text-sm font-semibold  sm:block">VIEW FARMERS</span>
             </li>
 
             <li
@@ -277,7 +277,7 @@ const Dashboard = () => {
               }}
             >
               <FiTruck className="nav-icon" />
-              <span className="nav-text">Inventory</span>
+              <span className="brand-text text-green text-sm font-semibold  sm:block">INVENTORY</span>
             </li>
 
             <li
@@ -289,7 +289,7 @@ const Dashboard = () => {
               }}
             >
               <FiDollarSign className="nav-icon" />
-              <span className="nav-text">Supplier</span>
+              <span className="brand-text text-green text-sm font-semibold ">SUPPLIER</span>
             </li>
 
             {/* <li 
@@ -326,14 +326,15 @@ const Dashboard = () => {
               }}
             >
               <FiBarChart2 className="nav-icon" />
-              <span className="nav-text">View Analytics</span>
+              <span className="brand-text text-green text-sm font-semibold  ">VIEW ANALYTICS</span>
             </li>
           </ul>
         </nav>
-        <div className="sidebar-footer">
+        <div className="sidebar-footer font-semibold">
+         
           <p>
-            © {new Date().getFullYear()} codes.book • Cultivating Success
-            Together 🌾
+            © {new Date().getFullYear()} CODES.BOOK • CULTIVATING SUCCESS
+            TOGETHER 🌾
           </p>
         </div>
       </aside>

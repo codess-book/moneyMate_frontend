@@ -12,11 +12,30 @@
 
 /* Header */
 .edit-header {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 30px;
-  position: relative;
+   margin-bottom: 30px;
+  text-align: center;
 }
+
+
+
+
+.form-header h2{
+  font-size: 29px;
+  color:grey;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+
+.form-header p {
+  color: #7f8c8d;
+  font-size: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+
+
 
 .back-btn {
   display: flex;

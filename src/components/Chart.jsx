@@ -126,6 +126,8 @@ return (
     <header className={styles.header}>
       <h1>Business Dashboard</h1>
       <p className={styles.subtitle}>Overview of your business performance</p>
+
+      
     </header>
 
     <div className={styles.grid}>

@@ -1,5 +1,6 @@
 /* CustomerList.css */
 
+
 /* Base Styles */
 .customer-list-container {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -11,6 +12,8 @@
   min-height: 100vh;
   font-size: 15px; /* Increased base font size */
 }
+
+
 
 .truncate-text {
   max-width: 140px;       /* apne layout ke hisaab se adjust */
@@ -485,6 +488,8 @@
     font-size: 12px;
   }
 }
+
+
 /* CustomerList.css - Improved Version */
 
 /* Base Styles */
@@ -501,11 +506,31 @@
 
 /* Header Styles */
 .customer-list-header h2 {
-  color: #2c3e50;
-  font-size: 26px; /* Increased from 24px */
-  font-weight: 600;
-  margin: 0;
+  font-size: 29px;
+  color:grey;
+  margin-bottom: 8px;
+  font-weight: 700;
 }
+
+
+
+
+
+.form-header h2{
+  font-size: 29px;
+  color:grey;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+
+.form-header p {
+  color: #7f8c8d;
+  font-size: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 
 /* Table Content Font Sizes */
 .customer-table th {

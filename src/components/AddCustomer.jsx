@@ -721,7 +721,8 @@ const AddCustomer = () => {
 
       <div className="form-container">
         <div className="form-header">
-          <h2>Add / Update Customer</h2>
+          <h2>ADD / UPDATE CUSTOMER</h2>
+                  <p>Here you can add and update your customers !!</p>
           {error && <div className="error-message">{error}</div>}
         </div>
 
@@ -732,7 +733,7 @@ const AddCustomer = () => {
 
             <div className="input-group">
               <label className="input-label">
-                <FiUser /> Customer Name
+                <FiUser /> CUSTOMER NAME
               </label>
               <input
                 type="text"
@@ -747,7 +748,7 @@ const AddCustomer = () => {
 
             <div className="input-group">
               <label className="input-label">
-                <FiPhone /> Phone Number
+                <FiPhone /> PHONE NUMBER
               </label>
               <input
                 type="tel"
@@ -777,7 +778,7 @@ const AddCustomer = () => {
 
             <div className="input-group">
               <label className="input-label">
-                <FiHome /> Address
+                <FiHome /> ADDRESS
               </label>
               <textarea
                 name="address"
@@ -794,7 +795,7 @@ const AddCustomer = () => {
           {/* ITEMS WITH GST */}
           <div className="form-input">
             <h3 className="section-title ">
-              <FiShoppingCart /> Add Items
+              <FiShoppingCart /> ADD ITEMS
             </h3>
 
             {items.map((item, index) => {
@@ -832,13 +833,13 @@ const AddCustomer = () => {
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:text-gray-400 dark:disabled:text-gray-600 disabled:bg-transparent disabled:cursor-not-allowed rounded-md border border-gray-300 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-700 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-red-500"
                     >
                       <FiTrash2 className="w-3.5 h-3.5 px-3 py-3" />
-                      <span className="font-medium">Remove</span>
+                      <span className="font-medium">REMOVE</span>
                     </button>
                   </div>
 
                   {/* Category */}
                   <div className="detail-group">
-                    <label className="detail-label">Category</label>
+                    <label className="detail-label">CATEGORY</label>
                     <CreatableSelect
                       styles={customStyles}
                       isClearable
@@ -877,10 +878,10 @@ const AddCustomer = () => {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <label className="text-sm font-medium text-black-700 dark:text-black-300">
-                          Quantity
+                          QUANTITY
                         </label>
                         <span className="text-xs text-gray-500 dark:text-gray-400">
-                          Required
+                          REQUIRED
                         </span>
                       </div>
                       <div className="relative">
@@ -907,10 +908,10 @@ const AddCustomer = () => {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <label className="text-sm font-medium text-black-700 dark:text-black-300">
-                          Unit
+                          UNIT
                         </label>
                         <span className="text-xs text-gray-500 dark:text-gray-400">
-                          kg/ltr/pcs
+                          KG/LTR/PCS
                         </span>
                       </div>
                       <div className="relative">
@@ -931,10 +932,10 @@ const AddCustomer = () => {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <label className="text-sm font-medium text-black-700 dark:text-black-300">
-                          Price per Unit
+                       PRICE PER UNIT
                         </label>
                         <span className="text-xs text-gray-500 dark:text-gray-400">
-                          In Rupees
+                         IN RUPEES
                         </span>
                       </div>
                       <div className="relative">
@@ -963,10 +964,10 @@ const AddCustomer = () => {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <label className="text-sm font-medium text-black-700 dark:text-black-300">
-                          GST Rate
+                       GST RATE
                         </label>
                         <span className="text-xs text-gray-500 dark:text-gray-400">
-                          Percentage
+                          PERCENTAGE
                         </span>
                       </div>
                       <div className="relative">
@@ -979,7 +980,7 @@ const AddCustomer = () => {
                           className="w-full pl-10 pr-10 py-3 bg-white  border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600 transition-all duration-200 appearance-none cursor-pointer text-black-900 dark:text-black-100"
                         >
                           <option value="" disabled>
-                            Select GST rate
+                           SELECT GST RATE
                           </option>
                           {Array.from({ length: 30 }, (_, i) => i + 0).map(
                             (gst) => (
@@ -1020,7 +1021,7 @@ const AddCustomer = () => {
                   </div>
 
                   {/* Calculations - Bill Style */}
-                  <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
+                  <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800 px-8 py-8">
                     <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
                       <svg
                         className="w-4 h-4"
@@ -1035,16 +1036,16 @@ const AddCustomer = () => {
                           d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                         />
                       </svg>
-                      Bill Calculation
+                      BILL CALCULATIONS
                     </h4>
 
                     <div className="space-y-3  ">
                       {/* Taxable Amount */}
-                      <div className="flex items-center justify-between py-2 px-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                      <div className="flex items-center justify-between py-6 px-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                           <span className="text-sm text-gray-600 dark:text-black-400">
-                            Taxable Amount
+                           TAXABLE AMOUNT
                           </span>
                         </div>
                         <div className="text-sm font-medium text-black-800 dark:text-black-200">
@@ -1057,7 +1058,7 @@ const AddCustomer = () => {
                         <div className="flex items-center  gap-3">
                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                           <span className="text-sm text-gray-600 dark:text-black-400">
-                            GST Amount ({item.gstRate}%)
+                            GST AMOUNT ({item.gstRate}%)
                           </span>
                         </div>
                         <div className="text-sm font-medium text-black-600 dark:text-black-400">
@@ -1070,7 +1071,7 @@ const AddCustomer = () => {
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 bg-white rounded-full"></div>
                           <span className="text-sm font-semibold text-white">
-                            Total Amount
+                            TOTAL AMOUNT
                           </span>
                         </div>
                         <div className="text-lg font-bold text-white">
@@ -1100,21 +1101,21 @@ const AddCustomer = () => {
             <button
               type="button"
               onClick={addItem}
-              className="group flex items-center justify-center gap-2 w-full px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 border-2 border-dashed border-blue-200 dark:border-gray-700 rounded-xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg hover:shadow-blue-100 dark:hover:shadow-blue-900/20 transition-all duration-300 hover:-translate-y-0.5 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
+              className="group flex items-center justify-center gap-2 w-full px-6 py-4 bg-grey  dark:from-gray-800 dark:to-gray-900 border-2 border-dashed border-blue-200 dark:border-gray-700 rounded-xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-lg hover:shadow-blue-100 dark:hover:shadow-blue-900/20 transition-all duration-300 hover:-translate-y-0.5 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
             >
               <FiPlus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-              Add Item
+             ADD ITEM
             </button>
           </div>
 
           {/* PAYMENT INFO */}
           <div className="form-section">
-            <h3 className="section-title">Payment Information</h3>
+            <h3 className="section-title">PAYMENT INFORMATION</h3>
 
             <div className="payment-grid">
               <div className="input-group">
                 <label className="input-label">
-                  <FiCalendar /> Payment Date
+                  <FiCalendar /> PAYMENT DATE
                 </label>
                 <input
                   type="date"
@@ -1128,7 +1129,7 @@ const AddCustomer = () => {
 
               <div className="input-group">
                 <label className="input-label">
-                  <FiCalendar /> Next Payment Date
+                  <FiCalendar /> NEXT PAYMENT DATE
                 </label>
                 <input
                   type="date"
@@ -1142,7 +1143,7 @@ const AddCustomer = () => {
 
               <div className="input-group">
                 <label className="input-label">
-                  <FiCreditCard /> Paid Amount (₹)
+                  <FiCreditCard /> PAID AMOUNT (₹)
                 </label>
                 <input
                   type="number"

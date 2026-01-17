@@ -94,7 +94,7 @@ const AdminPanel = () => {
   return (
     <div className="admin-dashboard">
       <div className="dashboard-header">
-        <h1>Dashboard Overview</h1>
+        <h1>DASHBOARD</h1>
         <p>Welcome back! Here's what's happening with your business</p>
       </div>
 
@@ -144,11 +144,11 @@ const AdminPanel = () => {
 
       <div className="dashboard-section">
         <div className="section-header">
-          <h2>Upcoming Payments</h2>
+          <h2>UPCOMING PAYMENTS</h2>
           <span className="badge">{upcoming.length} pending</span>
         </div>
 
-        <div className="reminders-table">
+        <div className="reminders-table-new">
           <div className="table-header">
             <div className="header-cell customer">Customer</div>
             <div className="header-cell contact">Contact</div>
@@ -185,12 +185,25 @@ const AdminPanel = () => {
                   <FiEye className="btn-icon" />{" "}
                   <span className="btn-text">View</span>
                 </button>
+{/* 
+                <button
+                  className="action-btn-pannel view"
+                  onClick={() => Navigate("/dashboard/viewCustomers")}
+                >
+                  <FiEye /> View
+                </button> */}
+
                 <button
                   className="action-btn-pannel"
                   onClick={() => sendReminder(reminder._id)} // Use reminder._id
                 >
                   <FiSend className="btn-icon" /> <span>Send Reminder</span>
                 </button>
+
+                {/* <button className="action-btn-pannel send"
+                 onClick={() => sendReminder(reminder._id)}>
+                  <FiSend /> Send
+                </button> */}
               </div>
             </div>
           ))}
@@ -198,10 +211,13 @@ const AdminPanel = () => {
       </div>
 
       <div className="dashboard-section">
-        <h2>Quick Actions</h2>
+       <div className="section-header">
+          <h2>QUICK ACTIONS</h2>
+          
+        </div>
         <div className="quick-actions">
           <button
-            className="action-btn-panel primary"
+            className="action-btn-panel  "
             onClick={() => Navigate("/dashboard/customers")}
           >
             <FiPlus className="btn-icon" /> <span>Add Customer</span>

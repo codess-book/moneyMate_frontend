@@ -15,6 +15,7 @@ import {
   FaWarehouse,
 } from "react-icons/fa";
 import "../styles/logistic.css";
+import Swal from "sweetalert2";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -282,34 +283,46 @@ export default function Inventory() {
   };
 
   // ❌ Delete item
-  const handleDelete = async (id) => {
-    toast.info(
-      <div className="flex flex-col items-start">
-        <p className="font-semibold">Are you sure you want to delete?</p>
-        <div className="mt-2 flex gap-3">
-          <button
-            onClick={async () => {
-              await fetch(`${API}/api/inventory/${id}`, { method: "DELETE" });
-              fetchItems();
-              toast.dismiss();
-              toast.success("🗑️ Item Deleted");
-            }}
-            className="bg-red-500 text-white px-3 py-1 rounded-md"
-          >
-            Yes
-          </button>
+ const handleDelete = async (id) => {
+  console.log("hiy");
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "Cancel",
+  });
 
-          <button
-            onClick={() => toast.dismiss()}
-            className="bg-gray-700 text-white px-3 py-1 rounded-md"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>,
-      { autoClose: false }
-    );
-  };
+  if (result.isConfirmed) {
+    try {
+      await fetch(`${API}/api/inventory/${id}`, {
+        method: "DELETE",
+      });
+
+      fetchItems();
+
+      Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Item has been deleted successfully.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Delete failed", error);
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to delete item. Please try again.",
+      });
+    }
+  }
+};
+
 
   // edit
   const handleEdit = (item) => {
@@ -332,21 +345,28 @@ export default function Inventory() {
 
   return (
     <div className="inventory-container">
+      
       {/* Header */}
       <div className="inventory-header">
-        <div className="header-content">
-          <div className="header-left">
+        {/* <div className="header-content"> */}
+          {/* <div className="header-left">
             <h1>📦 Inventory Management</h1>
             <p>Manage your farm products and stock levels efficiently</p>
-          </div>
+          </div> */}
+            <div className="form-header">
+          <h2>INVENTORY MANAGEMENT</h2>
+          <p>Manage your farm products and stock levels efficiently !!</p>
+          
+        </div>
           <button className="add-item-btn" onClick={handleAddItemClick}>
             <FaPlus /> Add New Item
           </button>
-        </div>
+        {/* </div> */}
       </div>
 
       {/* Filters */}
       <div className="filters-section">
+        
         <div className="filters-grid">
           <div className="filter-group">
             <label htmlFor="search">🔍 Search Items</label>
@@ -447,7 +467,7 @@ export default function Inventory() {
                 {items.map((item) => (
                   <tr key={item._id}>
                     <td data-label="Name">
-                      <strong>{item.name}</strong>
+                      <strong  className="capitalize">{item.name}</strong>
                     </td>
                     <td data-label="Category">
                       <span className="category-badge">{item.category}</span>

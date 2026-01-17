@@ -147,7 +147,6 @@ const CustomerList = () => {
   };
 
   const handleNavigatepayment = async (id) => {
-
     try {
       const token = localStorage.getItem("token"); //  Get token from localStorage
       //`http://localhost:8080/api/customers/${id}` ye purana hai
@@ -287,7 +286,10 @@ const CustomerList = () => {
 </button> */}
 
       <div className="customer-list-header">
-        <h2>Customer Management</h2>
+        <div className="form-header">
+          <h2>CUSTOMER MANAGEMENT</h2>
+          <p>Here you can view  all details and can update and add payments !!</p>
+        </div>
 
         <div className="controls-container">
           <div className="search-container">
@@ -454,9 +456,6 @@ const CustomerList = () => {
                               </small>
                             </>
                           )}
-
-
-
                         </td>
                         <td className="actions">
                           <div className="tooltip">
@@ -521,9 +520,6 @@ const CustomerList = () => {
                             <span className="tooltiptext">Delete Customer</span>
                           </div>
                         </td>
-
-
-
                       </tr>
                     );
                   })

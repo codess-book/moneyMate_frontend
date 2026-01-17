@@ -107,7 +107,12 @@ const CustomerDetail = () => {
         <button onClick={() => navigate(-1)} className="back-btn">
           <FiChevronRight className="btn-icon" /> Back
         </button>
-        <h2>Customer Details</h2>
+        {/* <h2>Customer Details</h2> */}
+
+          <div className="form-header">
+          <h2>CUSTOMER DETAILS</h2>
+          <p>Here you can all the details of the customer !!</p>
+        </div>
       </div>
 
       <button

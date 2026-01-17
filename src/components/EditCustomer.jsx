@@ -90,8 +90,12 @@ const EditCustomer = () => {
           <FiChevronRight className="btn-icon" /> Back
           
         </button>
-        <div className="header-content">
+        {/* <div className="header-content">
           <h2>Edit Customer</h2>
+          <p>Update the details for {customer.name || "Customer"}</p>
+        </div> */}
+          <div className="form-header">
+          <h2>EDIT CUSTOMER </h2>
           <p>Update the details for {customer.name || "Customer"}</p>
         </div>
       </div>

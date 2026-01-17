@@ -59,10 +59,14 @@ export default function SupplierHistoryPage() {
 
   return (
     <div className="supplier-history-container">
-      <header className="page-header">
+      {/* <header className="page-header">
         <h1 className="page-title">Supplier History</h1>
         <p className="page-subtitle">Track every harvest purchase</p>
-      </header>
+      </header> */}
+        <div className="form-header">
+          <h2>SUPPLIER HISTORY</h2>
+          <p>Here you can Track every harvest purchase and supplier!!</p>
+        </div>
 
       <div className="dashboard-layout">
         {/* LEFT PANEL — ITEMS LIST */}
@@ -141,7 +145,7 @@ export default function SupplierHistoryPage() {
               </div>
             ) : (
               <div className="table-container">
-                <table className="history-table">
+                <table className="history-table-new">
                   <thead>
                     <tr>
                       <th>Supplier</th>
@@ -164,7 +168,7 @@ export default function SupplierHistoryPage() {
                           });
                         }}
                       >
-                        <td>{h.supplierName}</td>
+                        <td className="capitalize" >{h.supplierName}</td>
                         <td>
                           <a href={`tel:${h.supplierPhone}`}>
                             {h.supplierPhone}

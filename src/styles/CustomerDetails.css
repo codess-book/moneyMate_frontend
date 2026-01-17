@@ -10,10 +10,34 @@
 
 /* Header */
 .detail-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 30px;
+ margin-bottom: 30px;
+  text-align: center;
 }
+
+
+
+/* .dashboard-header h1 {
+  font-size: 32px;
+  color:grey;
+  margin-bottom: 8px;
+  font-weight: 700;
+} */
+.form-header h2{
+  font-size: 29px;
+  color:grey;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+
+.form-header p {
+  color: #7f8c8d;
+  font-size: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+s
 
 .detail-header h2 {
   font-size: 1.75rem;

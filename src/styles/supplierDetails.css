@@ -19,6 +19,9 @@
   color: #666;
 }
 
+.info-grid-new p{
+  color: rgb(48, 48, 48);
+}
 .supplier-info-card,
 .purchase-history-card {
   background: white;
@@ -28,7 +31,7 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.info-grid {
+.info-grid-new {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
@@ -44,6 +47,7 @@
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  color: #333;
 }
 
 .purchase-table tr:hover {

@@ -45,6 +45,7 @@
 
 .items-panel {
   flex: 0 0 380px;
+  /* display : */
 }
 
 .history-panel {
@@ -55,6 +56,9 @@
   padding: 20px 24px;
   border-bottom: 1px solid #e2e8f0;
   background-color: #7071728d;
+  display: flex;
+  /* justify-content: /; */
+  justify-content: space-between;
 }
 
 .panel-title {
@@ -106,7 +110,15 @@
 .items-list-container {
   height: calc(100vh - 280px);
   overflow-y: auto;
+  /* display: block; */
+  
 }
+.items-list {
+  padding: 8px 0;
+ max-height: 100vh;
+  display: block;
+}
+
 
 .loading-state {
   display: flex;
@@ -187,42 +199,46 @@
 .history-container {
   height: calc(100vh - 280px);
   overflow-y: auto;
+  
 }
 
 .table-container {
   padding: 0;
+  /* background-color: ; */
 }
 
-.history-table {
+.history-table-new {
   width: 100%;
   border-collapse: collapse;
+  /* background-color: transparent; */
+  
 }
 
-.history-table thead {
-  background-color: #f9fafb;
+.history-table-new thead {
+  background-color: #c0c2c4;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
-.history-table th {
+.history-table-new th {
   padding: 16px 20px;
   text-align: left;
   font-size: 14px;
   font-weight: 600;
-  color: white;
-  border-bottom: 1px solid #e5e7eb;
+  color: rgb(56, 55, 55);
+  border-bottom: 1px solid #111112;
   white-space: nowrap;
 }
 
-.history-table td {
+.history-table-new td {
   padding: 16px 20px;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid #131415;
   font-size: 14px;
-  color: white;
+  color: rgb(17, 17, 17);
 }
 
-.history-table tbody tr {
+.history-table-new tbody tr {
   transition: background-color 0.2s;
 }
 
