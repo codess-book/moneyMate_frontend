@@ -238,7 +238,7 @@ const Dashboard = () => {
               }}
             >
               <FiHome className="nav-icon" />
-              <span className="brand-text text-green text-sm font-semibold  sm:block">DASHBOARD</span>
+              <span className="nav-text text-sm font-semibold">DASHBOARD</span>
             </li>
 
             <li
@@ -251,7 +251,7 @@ const Dashboard = () => {
               }}
             >
               <FiUserPlus className="nav-icon" />
-              <span className="brand-text text-green text-sm font-semibold  sm:block">ADD FARMERS</span>
+              <span className="nav-text text-sm font-semibold">ADD FARMERS</span>
             </li>
 
             <li
@@ -264,7 +264,7 @@ const Dashboard = () => {
               }}
             >
               <FiUsers className="nav-icon" />
-              <span className="brand-text text-green text-sm font-semibold  sm:block">VIEW FARMERS</span>
+              <span className="nav-text text-sm font-semibold">VIEW FARMERS</span>
             </li>
 
             <li
@@ -277,7 +277,7 @@ const Dashboard = () => {
               }}
             >
               <FiTruck className="nav-icon" />
-              <span className="brand-text text-green text-sm font-semibold  sm:block">INVENTORY</span>
+              <span className="nav-text text-sm font-semibold">INVENTORY</span>
             </li>
 
             <li
@@ -289,7 +289,7 @@ const Dashboard = () => {
               }}
             >
               <FiDollarSign className="nav-icon" />
-              <span className="brand-text text-green text-sm font-semibold ">SUPPLIER</span>
+              <span className="nav-text text-sm font-semibold ">SUPPLIER</span>
             </li>
 
             {/* <li 
@@ -326,7 +326,7 @@ const Dashboard = () => {
               }}
             >
               <FiBarChart2 className="nav-icon" />
-              <span className="brand-text text-green text-sm font-semibold  ">VIEW ANALYTICS</span>
+              <span className="nav-text text-sm font-semibold ">VIEW ANALYTICS</span>
             </li>
           </ul>
         </nav>
